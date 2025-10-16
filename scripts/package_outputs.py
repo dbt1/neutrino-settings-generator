@@ -258,6 +258,7 @@ def create_spec_archive(spec: PackageSpec, source_dir: Path, release_root: Path)
     if archive_path.exists():
         archive_path.unlink()
 
+    prefix = source_dir.name
     added: set[str] = set()
     included: list[str] = []
     with ZipFile(archive_path, "w", ZIP_DEFLATED) as zf:
@@ -271,7 +272,8 @@ def create_spec_archive(spec: PackageSpec, source_dir: Path, release_root: Path)
                 rel = file_path.relative_to(source_dir).as_posix()
                 if rel in added:
                     continue
-                zf.write(file_path, arcname=rel)
+                arcname = f"{prefix}/{rel}" if rel else prefix
+                zf.write(file_path, arcname=arcname)
                 added.add(rel)
                 included.append(rel)
 
