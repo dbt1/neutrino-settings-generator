@@ -14,7 +14,7 @@ This guide summarises the operational duties required to run `e2neutrino` in pro
 
 | Secret | Purpose | Notes |
 |--------|---------|-------|
-| `PAT_PUSH_NEUTRINO_SETTINGS` | Write access to `dbt1/neutrino-settings` for publishing artefacts | Use a fine-grained PAT with `contents:write`; stored as repository secret |
+| `ENV_GLOBAL` | Write access to `dbt1/neutrino-settings` for publishing artefacts | Use a fine-grained PAT with `contents:write`; stored as repository secret |
 | `GH_TOKEN` (optional) | Alternative token for release-please if repository-wide writes are restricted | Defaults to `GITHUB_TOKEN` when omitted |
 
 Store secrets under `Settings → Secrets and variables → Actions`. Rotate tokens at least every 90 days.
@@ -58,7 +58,7 @@ Dieser Leitfaden fasst die operativen Aufgaben für den produktiven Betrieb von 
 
 | Secret | Zweck | Hinweise |
 |--------|-------|----------|
-| `PAT_PUSH_NEUTRINO_SETTINGS` | Schreibrechte auf `dbt1/neutrino-settings` für die Artefakt-Publikation | Fine-Grained PAT mit `contents:write` als Repository-Secret hinterlegen |
+| `ENV_GLOBAL` | Schreibrechte auf `dbt1/neutrino-settings` für die Artefakt-Publikation | Fine-Grained PAT mit `contents:write` als Repository-Secret hinterlegen |
 | `GH_TOKEN` (optional) | Alternatives Token für release-please bei restriktiven Repos | Standardmäßig genügt `GITHUB_TOKEN` |
 
 Secrets unter `Settings → Secrets and variables → Actions` speichern und mindestens alle 90 Tage rotieren.

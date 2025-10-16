@@ -110,7 +110,7 @@ See `.github/workflows/*.yml` for full definitions. Nightly artefacts can be pub
 
 1. **Allow Actions:** `Settings → Actions → General → Allow all actions and reusable workflows`.
 2. **Provide Secrets (if publishing):** `Settings → Secrets and variables → Actions → New repository secret`.
-   - `PAT_PUSH_NEUTRINO_SETTINGS`: fine-grained PAT (`contents:write`) that can push to `dbt1/neutrino-settings`.
+   - `ENV_GLOBAL`: fine-grained PAT (`contents:write`) that can push to `dbt1/neutrino-settings`.
 3. **Verify Workflows:** Open the **Actions** tab and ensure `CI`, `Release`, and `Sync and Build` are listed.
 4. **Test CI:** Push any branch or open a PR; the `CI` workflow should run automatically and report fast-fail status.
 5. **Manual Release (optional):** From **Actions → Release → Run workflow**. When the release-please PR is merged, it will tag `vX.Y.Z`, update `CHANGELOG.md`, and create a GitHub Release.

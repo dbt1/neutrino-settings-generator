@@ -110,7 +110,7 @@ Details stehen in `.github/workflows/*.yml`. Nächtliche Artefakte lassen sich p
 
 1. **Actions freischalten:** `Settings → Actions → General → Allow all actions and reusable workflows`.
 2. **Secrets anlegen (bei Publish):** `Settings → Secrets and variables → Actions → New repository secret`.
-   - `PAT_PUSH_NEUTRINO_SETTINGS`: Fine-Grained PAT (`contents:write`) mit Push-Rechten auf `dbt1/neutrino-settings`.
+   - `ENV_GLOBAL`: Fine-Grained PAT (`contents:write`) mit Push-Rechten auf `dbt1/neutrino-settings`.
 3. **Workflows prüfen:** Im Tab **Actions** sollten `CI`, `Release`, `Sync and Build` sichtbar sein.
 4. **CI testen:** Commit pushen oder PR öffnen → `CI` läuft automatisch und liefert Fast-Fail-Feedback.
 5. **Release manuell (optional):** **Actions → Release → Run workflow**. Nach Merge des release-please-PRs entsteht Tag `vX.Y.Z`, ein GitHub-Release sowie ein aktualisiertes `CHANGELOG.md`.
