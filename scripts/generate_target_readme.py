@@ -58,13 +58,15 @@ def build_readme(
         "en": (
             "1. Pick the ZIP that matches your receiver or preferred profile.\n"
             "2. Download and unzip the archive on your computer.\n"
-            "3. Copy the unpacked `ALL/` contents onto your Neutrino box (typically via FTP into `/var/tuxbox/config/zapit/`).\n"
+            "3. Copy the unpacked `ALL/` contents onto your Neutrino box via FTP "
+            "(usually `/var/tuxbox/config/zapit/`).\n"
             "4. Reboot or reload services so the new settings appear.\n"
         ),
         "de": (
             "1. Wähle das passende ZIP für deinen Receiver bzw. das gewünschte Profil.\n"
             "2. Lade das Archiv herunter und entpacke es am PC.\n"
-            "3. Kopiere den entpackten Inhalt aus `ALL/` auf deine Neutrino-Box (meist per FTP nach `/var/tuxbox/config/zapit/`).\n"
+            "3. Kopiere den entpackten Inhalt aus `ALL/` per FTP auf deine Neutrino-Box "
+            "(meist `/var/tuxbox/config/zapit/`).\n"
             "4. Box neu starten oder Kanallisten neu laden, damit die Settings aktiv werden.\n"
         ),
     }[locale]
