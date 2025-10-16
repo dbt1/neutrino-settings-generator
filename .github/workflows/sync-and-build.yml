@@ -117,6 +117,7 @@ jobs:
         if: ${{ env.PUBLISH_TOKEN != '' }}
         run: |
           set -euo pipefail
+          echo "Preparing publish payload for ${TARGET_REPOSITORY}"
           mkdir -p target/releases
           rsync -av --delete publish/releases/ target/releases/
           if [ -d publish/generated ]; then
@@ -124,13 +125,17 @@ jobs:
             rsync -av --delete publish/generated/ target/generated/
           fi
           cd target
+          echo "Active remotes:"
+          git remote -v
           git config user.name "Thilo Graf"
           git config user.email "dbt@novatux.de"
-          git status
+          git status --short
           if git diff --quiet; then
             echo "No changes to commit."
             exit 0
           fi
           git add .
           git commit -m "ci: nightly settings update"
+          git status --short
+          echo "Pushing updates to ${TARGET_REPOSITORY}"
           git push origin HEAD
