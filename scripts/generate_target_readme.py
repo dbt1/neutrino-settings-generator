@@ -11,11 +11,12 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 from pathlib import Path
+from zipfile import ZipFile
 
 
 def build_readme(
     release_date: dt.date,
-    bundles: list[tuple[str, Path]],
+    bundles: list[dict[str, str]],
     generated_root: Path,
     locale: str,
 ) -> str:
@@ -38,12 +39,35 @@ def build_readme(
     download_caption = {"en": "## Downloads\n", "de": "## Downloads\n"}[locale]
 
     link_lines = []
-    for label, rel_path in bundles:
+    for bundle in bundles:
+        label = bundle["label"]
+        rel_path = bundle["path"]
+        contents = bundle["contents"]
         link_text = {
-            "en": f"- [{label}]({rel_path.as_posix()})",
-            "de": f"- [{label}]({rel_path.as_posix()})",
+            "en": f"- [{label}]({rel_path}) – contains {contents}",
+            "de": f"- [{label}]({rel_path}) – enthält {contents}",
         }[locale]
         link_lines.append(link_text)
+
+    instructions_caption = {
+        "en": "## How To Use\n",
+        "de": "## Anleitung\n",
+    }[locale]
+
+    instructions_body = {
+        "en": (
+            "1. Pick the ZIP that matches your receiver or preferred profile.\n"
+            "2. Download and unzip the archive on your computer.\n"
+            "3. Copy the unpacked `ALL/` contents onto your Neutrino box (typically via FTP into `/var/tuxbox/config/zapit/`).\n"
+            "4. Reboot or reload services so the new settings appear.\n"
+        ),
+        "de": (
+            "1. Wähle das passende ZIP für deinen Receiver bzw. das gewünschte Profil.\n"
+            "2. Lade das Archiv herunter und entpacke es am PC.\n"
+            "3. Kopiere den entpackten Inhalt aus `ALL/` auf deine Neutrino-Box (meist per FTP nach `/var/tuxbox/config/zapit/`).\n"
+            "4. Box neu starten oder Kanallisten neu laden, damit die Settings aktiv werden.\n"
+        ),
+    }[locale]
 
     generated_caption = {
         "en": "## Generated Profiles\n",
@@ -82,6 +106,8 @@ def build_readme(
         *(line + "\n" for line in link_lines),
         generated_caption,
         *(line + "\n" for line in generated_lines),
+        instructions_caption,
+        instructions_body,
         footer,
     ]
     return "".join(sections)
@@ -112,11 +138,18 @@ def main() -> int:
     latest = release_dirs[0]
     release_date = dt.datetime.strptime(latest.name, "%Y-%m-%d").date()
 
-    bundles: list[tuple[str, Path]] = []
+    bundles: list[dict[str, str]] = []
     for file in sorted(latest.glob("*.zip")):
         label = file.stem.replace("-", " ").replace("_", " ").title()
         rel_path = Path("releases") / latest.name / file.name
-        bundles.append((label, rel_path))
+        zip_contents = describe_zip(file)
+        bundles.append(
+            {
+                "label": label,
+                "path": rel_path.as_posix(),
+                "contents": zip_contents,
+            }
+        )
 
     generated_root = target_dir / "generated"
 
@@ -127,6 +160,22 @@ def main() -> int:
     (target_dir / "README.de.md").write_text(readme_de, encoding="utf-8")
 
     return 0
+
+
+def describe_zip(path: Path) -> str:
+    with ZipFile(path) as zf:
+        top_entries: set[str] = set()
+        for name in zf.namelist():
+            name = name.rstrip("/")
+            if not name:
+                continue
+            top_entries.add(name.split("/", 1)[0])
+    entries = sorted(top_entries)
+    if not entries:
+        return "no files"
+    if len(entries) == 1:
+        return f"`{entries[0]}`"
+    return ", ".join(f"`{entry}`" for entry in entries)
 
 
 if __name__ == "__main__":
