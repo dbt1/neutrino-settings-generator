@@ -1,111 +1,131 @@
-"""
-Command line entry point.
-
-Deutsch:
-    Kommandozeilen-Einstiegspunkt.
-"""
+"""Click-based command line entry point for e2neutrino."""
 
 from __future__ import annotations
 
-import argparse
 import logging
 import sys
 from pathlib import Path
+from typing import Any, Iterable, Optional, Set
+
+import click
 
 from . import __version__
-from .converter import ConversionError, ConversionOptions, convert
-from .ingest import IngestError, ingest
+from .converter import ConversionError, ConversionResult, run_convert
+from .ingest import IngestError, IngestResult, run_ingest
 from .logging_conf import configure_logging
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="e2neutrino",
-        description="Enigma2 → Neutrino conversion toolkit",
+@click.group(help="Enigma2 → Neutrino conversion toolkit")
+@click.version_option(__version__)
+@click.option("--verbose", is_flag=True, help="Enable verbose logging output.")
+@click.pass_context
+def cli(ctx: click.Context, verbose: bool) -> None:
+    """
+    Root CLI group configuring logging before subcommands execute.
+    """
+
+    configure_logging("DEBUG" if verbose else "INFO")
+    ctx.ensure_object(dict)
+    ctx.obj["verbose"] = verbose
+
+
+@cli.command("convert")
+@click.option("--input", "inp", required=True, type=click.Path(path_type=Path, exists=True, file_okay=False))
+@click.option("--output", "out", required=True, type=click.Path(path_type=Path, file_okay=False))
+@click.option("--api-version", default=4, show_default=True, type=int, help="Target Neutrino API version.")
+@click.option("--filter-bouquets", default=None, help="Regex used to select bouquets, leave empty for all.")
+@click.option(
+    "--include-types",
+    default="S,C,T",
+    show_default=True,
+    help="Comma separated filter of delivery types (S,C,T).",
+)
+@click.option("--satellites", default=None, help="Comma separated list of satellite identifiers to include.")
+@click.option("--combinations", default=None, help="Comma separated satellite combinations (NameA+NameB).")
+@click.option("--name-scheme", default="human", type=click.Choice(["human", "code"]), show_default=True)
+@click.option("--name-map", default=None, type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.option("--no-sat", is_flag=True, default=False, help="Disable generation of satellite outputs.")
+@click.option("--no-cable", is_flag=True, default=False, help="Disable generation of cable outputs.")
+@click.option("--no-terrestrial", is_flag=True, default=False, help="Disable generation of terrestrial outputs.")
+@click.option("--fail-on-warn", is_flag=True, default=False, help="Treat validation warnings as fatal.")
+def cli_convert(**kwargs: Any) -> None:
+    """Convert Enigma2-like folders into Neutrino XML outputs."""
+
+    try:
+        result: ConversionResult = run_convert(**_transform_convert_kwargs(kwargs))
+    except ConversionError as exc:
+        raise click.ClickException(str(exc)) from exc
+    logging.getLogger(__name__).info(
+        "conversion completed with %d warnings -> %s", len(result.warnings), result.output_path
     )
-    parser.add_argument("--version", action="version", version=f"e2neutrino {__version__}")
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="enable verbose logging / detailliertes Logging aktivieren",
-    )
-
-    subparsers = parser.add_subparsers(dest="command", required=True)
-
-    conv = subparsers.add_parser("convert", help="convert Enigma2 profile to Neutrino settings")
-    conv.add_argument("--input", required=True, type=Path, help="input directory mit lamedb/bouquets")
-    conv.add_argument("--output", required=True, type=Path, help="output directory for Neutrino settings")
-    conv.add_argument("--api-version", type=int, default=4, help="Neutrino API version (default: 4)")
-    conv.add_argument("--filter-bouquets", help="Regex to filter bouquets")
-    conv.add_argument("--include-types", help="Comma separated filter of delivery types (S,C,T)")
-    conv.add_argument("--satellites", help="Comma separated list of satellite codes/names to include")
-    conv.add_argument("--combinations", help="Comma separated satellite combinations (NameA+NameB)")
-    conv.add_argument("--name-scheme", choices=["human", "code"], default="human")
-    conv.add_argument("--name-map", type=Path, help="JSON/YAML mapping for friendly names")
-    conv.add_argument("--no-sat", action="store_true", help="disable satellite outputs")
-    conv.add_argument("--no-cable", action="store_true", help="disable cable outputs")
-    conv.add_argument("--no-terrestrial", action="store_true", help="disable terrestrial outputs")
-    conv.add_argument("--fail-on-warn", action="store_true", help="treat validation warnings as fatal")
-
-    ing = subparsers.add_parser("ingest", help="ingest official sources")
-    ing.add_argument("--config", required=True, type=Path, help="YAML file describing sources")
-    ing.add_argument("--out", required=True, type=Path, help="working directory to place normalized profiles")
-    ing.add_argument("--only", help="Comma separated list of source IDs to process")
-    ing.add_argument("--cache", type=Path, help="cache directory for HTTP/git")
-
-    return parser
 
 
-def main(argv: list[str] | None = None) -> int:
-    argv = argv or sys.argv[1:]
-    parser = build_parser()
-    args = parser.parse_args(argv)
+@cli.command("ingest")
+@click.option("--config", "config_path", required=True, type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.option("--out", "out_dir", required=True, type=click.Path(path_type=Path, file_okay=False))
+@click.option("--only", default=None, help="Comma separated list of source IDs to process.")
+@click.option(
+    "--cache",
+    default=Path("/tmp/e2n-cache"),
+    show_default=True,
+    type=click.Path(path_type=Path, file_okay=False),
+    help="Cache directory used for HTTP metadata.",
+)
+def cli_ingest(**kwargs: Any) -> None:
+    """Fetch and normalise upstream sources (git/http/file)."""
 
-    configure_logging("DEBUG" if args.verbose else "INFO")
-
-    if args.command == "convert":
-        options = ConversionOptions(
-            api_version=args.api_version,
-            filter_bouquets=args.filter_bouquets,
-            include_types=_split(args.include_types),
-            satellites=_split(args.satellites),
-            combinations=_split(args.combinations),
-            name_scheme=args.name_scheme,
-            name_map_path=args.name_map,
-            include_sat=not args.no_sat,
-            include_cable=not args.no_cable,
-            include_terrestrial=not args.no_terrestrial,
-            fail_on_warn=args.fail_on_warn,
-        )
-        try:
-            result = convert(args.input, args.output, options)
-        except ConversionError as exc:
-            logging.getLogger(__name__).error(str(exc))
-            return 2
-        logging.getLogger(__name__).info("conversion completed with %d warnings", len(result.warnings))
-        return 0
-
-    if args.command == "ingest":
-        only = _split(args.only)
-        try:
-            results = ingest(args.config, args.out, only=only, cache_dir=args.cache)
-        except IngestError as exc:
-            logging.getLogger(__name__).error(str(exc))
-            return 3
-        logging.getLogger(__name__).info("ingested %d profiles", len(results))
-        logger = logging.getLogger(__name__)
-        for ingest_result in results:
-            logger.info("%s/%s -> %s", ingest_result.source_id, ingest_result.profile_id, ingest_result.output_path)
-        return 0
-
-    parser.print_help()
-    return 1
+    try:
+        results: list[IngestResult] = run_ingest(**_transform_ingest_kwargs(kwargs))
+    except IngestError as exc:
+        raise click.ClickException(str(exc)) from exc
+    logger = logging.getLogger(__name__)
+    logger.info("ingested %d profiles", len(results))
+    for item in results:
+        logger.info("%s/%s -> %s", item.source_id, item.profile_id, item.output_path)
 
 
-def _split(value: str | None) -> set[str] | None:
-    if not value:
+def _transform_convert_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    mutated = dict(kwargs)
+    mutated["include_types"] = _normalise(mutated.get("include_types"))
+    mutated["satellites"] = _normalise(mutated.get("satellites"))
+    mutated["combinations"] = _normalise(mutated.get("combinations"))
+    return mutated
+
+
+def _transform_ingest_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    mutated = dict(kwargs)
+    mutated["only"] = _normalise(mutated.get("only"))
+    cache_value = mutated.get("cache")
+    if cache_value is not None:
+        mutated["cache"] = Path(cache_value)
+    return mutated
+
+
+def _normalise(value: Optional[Any]) -> Optional[Set[str]]:
+    if value is None:
         return None
-    return {item.strip() for item in value.split(",") if item.strip()}
+    if isinstance(value, (set, frozenset)):
+        return set(value)
+    if isinstance(value, Iterable) and not isinstance(value, (str, bytes, Path)):
+        return {str(item).strip() for item in value if str(item).strip()}
+    text = str(value)
+    return {item.strip() for item in text.split(",") if item and item.strip()} or None
+
+
+def main(argv: Optional[Iterable[str]] = None) -> int:
+    """
+    Backwards compatible entry point returning an exit code for setuptools console scripts.
+    """
+
+    argv_list = list(argv or sys.argv[1:])
+    try:
+        cli.main(args=argv_list, prog_name="e2neutrino", standalone_mode=False)
+    except click.ClickException as exc:
+        exc.show()
+        return 1
+    except SystemExit as exc:
+        return int(exc.code or 0)
+    return 0
 
 
 if __name__ == "__main__":

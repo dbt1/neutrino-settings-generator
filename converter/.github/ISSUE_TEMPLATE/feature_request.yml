@@ -1,0 +1,43 @@
+name: "\U0001F4A1 Feature request"
+description: Suggest an enhancement or new capability.
+title: "[Feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We appreciate ideas that keep the toolchain deterministic and production ready.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the problem you want to solve.
+      placeholder: |
+        When converting provider X we currently cannot …
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Outline the change, including CLI flags, workflow updates, or docs.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      options:
+        - Low
+        - Medium
+        - High
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: List other approaches you considered.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Links, diagrams, or downstream repositories affected.

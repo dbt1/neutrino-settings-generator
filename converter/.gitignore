@@ -19,6 +19,7 @@ work/
 .cache/
 out/
 build/
+releases/
 
 # Coverage / Reports
 .coverage

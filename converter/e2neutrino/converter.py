@@ -11,7 +11,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Iterable, Optional, Set, Union
 
 import yaml
 
@@ -80,3 +80,50 @@ def _load_name_map(path: Path) -> Dict[str, Dict[str, str]]:
         if isinstance(mapping, dict):
             result[category] = {str(k): str(v) for k, v in mapping.items()}
     return result
+
+
+def run_convert(
+    *,
+    inp: Union[str, Path],
+    out: Union[str, Path],
+    api_version: int = 4,
+    filter_bouquets: Optional[str] = None,
+    include_types: Optional[Union[Iterable[str], str]] = None,
+    satellites: Optional[Union[Iterable[str], str]] = None,
+    combinations: Optional[Union[Iterable[str], str]] = None,
+    name_scheme: str = "human",
+    name_map: Optional[Union[str, Path]] = None,
+    no_sat: bool = False,
+    no_cable: bool = False,
+    no_terrestrial: bool = False,
+    fail_on_warn: bool = False,
+) -> ConversionResult:
+    """
+    Convenience wrapper used by the CLI to orchestrate conversions.
+    """
+
+    options = ConversionOptions(
+        api_version=api_version,
+        filter_bouquets=filter_bouquets,
+        include_types=_normalise_iterable(include_types),
+        satellites=_normalise_iterable(satellites),
+        combinations=_normalise_iterable(combinations),
+        name_scheme=name_scheme,
+        name_map_path=Path(name_map) if name_map else None,
+        include_sat=not no_sat,
+        include_cable=not no_cable,
+        include_terrestrial=not no_terrestrial,
+        fail_on_warn=fail_on_warn,
+    )
+    return convert(Path(inp), Path(out), options)
+
+
+def _normalise_iterable(value: Optional[Union[Iterable[str], str]]) -> Optional[Set[str]]:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        items = value.split(",")
+    else:
+        items = value
+    result = {item.strip() for item in items if item and item.strip()}
+    return result or None

@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 
 import pytest
 
-from e2neutrino.converter import ConversionOptions, convert
+from e2neutrino.converter import ConversionOptions, convert, run_convert
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
 
@@ -61,3 +61,16 @@ def test_lamedb5(tmp_path: Path) -> None:
 
     assert result.profile.metadata["lamedb_version"] == "5"
     assert (out_dir / "services.xml").exists()
+
+
+def test_run_convert_wrapper(enigma_profile: Path, tmp_path: Path) -> None:
+    out_dir = tmp_path / "wrapper"
+    result = run_convert(
+        inp=enigma_profile,
+        out=out_dir,
+        include_types="S,C",
+        no_terrestrial=True,
+        api_version=4,
+    )
+    assert (out_dir / "services.xml").exists()
+    assert result.output_path == out_dir

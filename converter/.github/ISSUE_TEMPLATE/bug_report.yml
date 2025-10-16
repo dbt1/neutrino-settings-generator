@@ -1,0 +1,52 @@
+name: "\U0001F41B Bug report"
+description: Report a reproducible problem with the converter or ingest pipeline.
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug! Please fill out each section so we can triage quickly.
+  - type: input
+    id: version
+    attributes:
+      label: Affected version
+      description: e.g. v1.2.3 or commit SHA.
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Component
+      multiple: true
+      options:
+        - CLI
+        - Ingest
+        - Converter
+        - Docker
+        - CI/CD
+        - Documentation
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect?
+      placeholder: |
+        Steps to reproduce:
+        1. …
+        2. …
+        Expected behaviour:
+        Actual behaviour:
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs & diagnostics
+      description: Paste relevant logs, stack traces, or attach artefacts.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Workarounds, related issues, or impacted workflows.

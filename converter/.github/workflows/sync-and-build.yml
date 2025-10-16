@@ -1,232 +1,127 @@
 name: Sync and Build
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: "0 2 * * *"
+  workflow_dispatch:
+
+env:
+  TARGET_REPOSITORY: dbt1/neutrino-settings
 
 jobs:
-  ingest:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.discover.outputs.matrix }}
-      profiles: ${{ steps.discover.outputs.profiles }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install toolchain
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
-          pip install -e ".[dev]"
+          pip install -e . --no-deps
 
       - name: Ingest sources
-        env:
-          E2N_CACHE: ${{ runner.temp }}/e2n-cache
         run: |
-          mkdir -p "$E2N_CACHE"
-          e2neutrino ingest \
-            --config examples/sources.example.yml \
-            --out work/ingest \
-            --cache "$E2N_CACHE"
+          mkdir -p work/ingest
+          e2neutrino ingest --config examples/sources.example.yml --out work/ingest --cache "${RUNNER_TEMP}/e2n-cache"
 
       - name: Discover profiles
-        id: discover
+        id: find
         run: |
-          python - <<'PY'
+          python <<'PY'
 import json
 import os
 from pathlib import Path
 
 base = Path("work/ingest")
-profiles = []
-matrix_entries = []
-sat_combos = ["Astra-19.2E", "Hotbird-13.0E", "Astra-19.2E+Hotbird-13.0E"]
-
-for path in sorted(base.glob("*/*/enigma2")):
-    source_id = path.parents[1].name
-    profile_id = path.parents[0].name
-    rel_path = path.as_posix()
-    profiles.append(
-        {
-            "source_id": source_id,
-            "profile_id": profile_id,
-            "profile_path": rel_path,
-        }
-    )
-    # ALL
-    matrix_entries.append(
-        {
-            "source_id": source_id,
-            "profile_id": profile_id,
-            "profile_path": rel_path,
-            "mode": "ALL",
-            "sat_combo": "",
-        }
-    )
-    # SAT individual + combos
-    for combo in sat_combos:
-        matrix_entries.append(
-            {
-                "source_id": source_id,
-                "profile_id": profile_id,
-                "profile_path": rel_path,
-                "mode": "SAT",
-                "sat_combo": combo,
-            }
-        )
-    # Cable and terrestrial modes
-    for mode in ("CABLE", "TERRESTRIAL"):
-        matrix_entries.append(
-            {
-                "source_id": source_id,
-                "profile_id": profile_id,
-                "profile_path": rel_path,
-                "mode": mode,
-                "sat_combo": "",
-            }
-        )
-
+profiles = [str(path) for path in base.glob("*/*/enigma2") if path.is_dir()]
 if not profiles:
-    raise SystemExit("no profiles discovered; check ingest configuration")
-
+    raise SystemExit("No profiles discovered; verify ingest configuration.")
 output = Path(os.environ["GITHUB_OUTPUT"])
 with output.open("a", encoding="utf-8") as fh:
-    fh.write(f"profiles={json.dumps(profiles)}\n")
-    fh.write(f"matrix={json.dumps({'include': matrix_entries})}\n")
+    fh.write(f"list={json.dumps(profiles)}\n")
+PY
+        shell: bash
+
+      - name: Convert profiles
+        env:
+          PROFILE_LIST: ${{ steps.find.outputs.list }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python <<'PY'
+import json
+import os
+import shutil
+from pathlib import Path
+from subprocess import run
+
+profiles = json.loads(os.environ["PROFILE_LIST"])
+for profile in profiles:
+    profile_path = Path(profile)
+    src_id = profile_path.parents[1].name
+    prof_id = profile_path.parent.name
+    out_dir = Path("out") / src_id / prof_id / "ALL"
+    out_dir.parent.mkdir(parents=True, exist_ok=True)
+    args = [
+        "e2neutrino",
+        "convert",
+        "--input",
+        str(profile_path),
+        "--output",
+        str(out_dir),
+        "--api-version",
+        "4",
+    ]
+    result = run(args, check=False)
+    if result.returncode != 0:
+        raise SystemExit(result.returncode)
+    buildinfo = profile_path.parent / "BUILDINFO.json"
+    if buildinfo.exists():
+        shutil.copy2(buildinfo, out_dir.parent / "BUILDINFO.json")
 PY
 
-      - name: Upload ingest workspace
+      - name: Package outputs
+        run: |
+          python scripts/package_outputs.py out publish
+
+      - name: Upload artefacts
         uses: actions/upload-artifact@v4
         with:
-          name: ingest-workspace
-          path: work/ingest
+          name: settings-bundles
+          path: publish/releases/*/*
           if-no-files-found: error
-
-  convert:
-    needs: ingest
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.ingest.outputs.matrix) }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .
-
-      - name: Download ingest workspace
-        uses: actions/download-artifact@v4
-        with:
-          name: ingest-workspace
-          path: work/ingest
-
-      - name: Convert profile
-        env:
-          SOURCE_ID: ${{ matrix.source_id }}
-          PROFILE_ID: ${{ matrix.profile_id }}
-          PROFILE_PATH: ${{ matrix.profile_path }}
-          MODE: ${{ matrix.mode }}
-          SAT_COMBO: ${{ matrix.sat_combo }}
-        run: |
-          set -eu
-          OUT_BASE="out/${SOURCE_ID}/${PROFILE_ID}"
-          mkdir -p "$OUT_BASE"
-          if [[ "$MODE" == "ALL" ]]; then
-            OUTPUT_DIR="$OUT_BASE/ALL"
-          else
-            SUFFIX="full"
-            if [[ -n "$SAT_COMBO" ]]; then
-              SUFFIX="$(echo "$SAT_COMBO" | tr ' +' '__' | tr -d '/:')"
-            fi
-            OUTPUT_DIR="$OUT_BASE/${MODE}/${SUFFIX}"
-          fi
-          mkdir -p "$OUTPUT_DIR"
-          ARGS=(
-            "--input" "${PROFILE_PATH}"
-            "--output" "${OUTPUT_DIR}"
-            "--api-version" "4"
-            "--name-scheme" "human"
-          )
-          case "$MODE" in
-            "ALL")
-              ;;
-            "SAT")
-              ARGS+=("--include-types" "S" "--no-cable" "--no-terrestrial")
-              if [[ "$SAT_COMBO" == *"+"* ]]; then
-                ARGS+=("--combinations" "${SAT_COMBO}")
-              elif [[ -n "$SAT_COMBO" ]]; then
-                ARGS+=("--satellites" "${SAT_COMBO}")
-              fi
-              ;;
-            "CABLE")
-              ARGS+=("--include-types" "C" "--no-sat" "--no-terrestrial")
-              ;;
-            "TERRESTRIAL")
-              ARGS+=("--include-types" "T" "--no-sat" "--no-cable")
-              ;;
-          esac
-          e2neutrino convert "${ARGS[@]}"
-          cp "${PROFILE_PATH%/enigma2}/BUILDINFO.json" "${OUT_BASE}/" || true
-
-      - name: Upload build artefact
-        uses: actions/upload-artifact@v4
-        with:
-          name: converted-${{ matrix.source_id }}-${{ matrix.profile_id }}-${{ matrix.mode }}${{ matrix.sat_combo && format('-{0}', matrix.sat_combo) || '' }}
-          path: out/${{ matrix.source_id }}/${{ matrix.profile_id }}
-          if-no-files-found: error
-
-  publish:
-    needs:
-      - ingest
-      - convert
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout converter repo
-        uses: actions/checkout@v4
-
-      - name: Download converted artefacts
-        uses: actions/download-artifact@v4
-        with:
-          path: out
-
-      - name: Prepare release bundles
-        run: |
-          python scripts/package_outputs.py out packages
 
       - name: Checkout target repository
+        if: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' }}
         uses: actions/checkout@v4
         with:
-          repository: neutrino-project/neutrino-settings
+          repository: ${{ env.TARGET_REPOSITORY }}
+          token: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS }}
           path: target
-          ssh-key: ${{ secrets.NEUTRINO_SETTINGS_DEPLOY_KEY }}
-          token: ${{ secrets.NEUTRINO_SETTINGS_TOKEN }}
 
-      - name: Sync generated settings
+      - name: Sync generated bundles
+        if: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' }}
         run: |
-          rsync -av --delete packages/ target/
-          cd target
-          git config user.name "neutrino-sync-bot"
-          git config user.email "actions@github.com"
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "ci: nightly settings update"
-            git push origin HEAD
+          set -euo pipefail
+          mkdir -p target/releases
+          rsync -av --delete publish/releases/ target/releases/
+          if [ -d publish/generated ]; then
+            mkdir -p target/generated
+            rsync -av --delete publish/generated/ target/generated/
           fi
+          cd target
+          git config user.name "Thilo Graf"
+          git config user.email "dbt@novatux.de"
+          git status
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git add .
+          git commit -m "ci: nightly settings update"
+          git push origin HEAD

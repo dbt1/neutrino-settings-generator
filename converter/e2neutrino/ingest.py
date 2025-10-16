@@ -12,7 +12,7 @@ import logging
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 import yaml
 
@@ -184,3 +184,35 @@ def _run_git(args: List[str], cwd: Path | None = None) -> None:
     cmd.extend(args)
     log.debug("running %s (cwd=%s)", " ".join(cmd), cwd or ".")
     subprocess.run(cmd, cwd=cwd, check=True)
+
+
+def run_ingest(
+    *,
+    config_path: Union[str, Path],
+    out_dir: Union[str, Path],
+    only: Optional[Union[Iterable[str], str]] = None,
+    cache: Optional[Union[str, Path]] = None,
+) -> List[IngestResult]:
+    """
+    Convenience wrapper used by the CLI to execute the ingest pipeline.
+    """
+
+    only_values = _normalise_iterable(only)
+    cache_dir = Path(cache) if cache else None
+    return ingest(
+        Path(config_path),
+        Path(out_dir),
+        only=only_values,
+        cache_dir=cache_dir,
+    )
+
+
+def _normalise_iterable(value: Optional[Union[Iterable[str], str]]) -> Optional[List[str]]:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        items = value.split(",")
+    else:
+        items = value
+    result = [item.strip() for item in items if item and item.strip()]
+    return result or None

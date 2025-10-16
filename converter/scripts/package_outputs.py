@@ -47,16 +47,17 @@ def main() -> int:
                 print(f"skip {label}: no ALL output", file=sys.stderr)
                 continue
 
-            target_dir = dest_dir / label
+            target_dir = dest_dir / "generated" / source_dir.name / profile_dir.name
             if target_dir.exists():
                 shutil.rmtree(target_dir)
-            shutil.copytree(all_dir, target_dir, dirs_exist_ok=True)
+            target_dir.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(all_dir, target_dir)
 
             buildinfo = profile_dir / "BUILDINFO.json"
             if buildinfo.exists():
                 shutil.copy2(buildinfo, target_dir / "BUILDINFO.json")
 
-            zip_base = release_root / label
+            zip_base = release_root / f"{source_dir.name}-{profile_dir.name}"
             archive_path = Path(
                 shutil.make_archive(
                     str(zip_base),

@@ -1,52 +1,38 @@
-.PHONY: help install lint test typecheck format convert-sample docker-build docker-run update-golden
+.PHONY: venv init lint test build convert-sample docker-build docker-run clean
 
-PYTHON ?= python
+VENV ?= .venv
+PYTHON := $(VENV)/bin/python
+PIP := $(VENV)/bin/pip
 PACKAGE := e2neutrino
 SAMPLE_PROFILE := samples/enigma2_profile_example
-SAMPLE_OUTPUT := build/sample-output
+SAMPLE_OUTPUT := out/sample
 
-help:
-	@echo "Targets:"
-	@echo "  install         Install package with dev extras"
-	@echo "  lint            Run ruff linting"
-	@echo "  typecheck       Run mypy type checking"
-	@echo "  test            Execute pytest suite"
-	@echo "  format          Auto-format with ruff"
-	@echo "  convert-sample  Convert sample Enigma2 profile"
-	@echo "  docker-build    Build multi-stage Docker image"
-	@echo "  docker-run      Run converter inside Docker (sample)"
-	@echo "  update-golden   Refresh golden XML fixtures (use with care)"
+venv:
+	python3 -m venv $(VENV)
 
-install:
-	$(PYTHON) -m pip install -e ".[dev]"
+init: venv
+	. $(VENV)/bin/activate && pip install --upgrade pip wheel
+	. $(VENV)/bin/activate && pip install -r requirements.txt
+	. $(VENV)/bin/activate && pip install -e . --no-deps
 
 lint:
-	ruff check $(PACKAGE) tests
-
-typecheck:
-	mypy $(PACKAGE)
+	. $(VENV)/bin/activate && ruff check .
 
 test:
-	$(PYTHON) -m pytest
+	. $(VENV)/bin/activate && pytest -q
 
-format:
-	ruff format $(PACKAGE) tests
+build:
+	. $(VENV)/bin/activate && python -m build
 
 convert-sample:
-	rm -rf $(SAMPLE_OUTPUT)
-	$(PYTHON) -m e2neutrino --version >/dev/null
-	e2neutrino convert --input $(SAMPLE_PROFILE) --output $(SAMPLE_OUTPUT)
+	. $(VENV)/bin/activate && e2neutrino convert --input $(SAMPLE_PROFILE) --output $(SAMPLE_OUTPUT) --api-version 4
 	@echo "Sample output written to $(SAMPLE_OUTPUT)"
 
 docker-build:
 	docker build -t e2neutrino:latest .
 
-docker-run: docker-build
-	docker run --rm -v $$(pwd)/$(SAMPLE_PROFILE):/input -v $$(pwd)/$(SAMPLE_OUTPUT):/output e2neutrino:latest \
-		e2neutrino convert --input /input --output /output
+docker-run:
+	docker run --rm -v "$$(pwd)/out:/out" e2neutrino:latest --help
 
-update-golden:
-	rm -rf $(SAMPLE_OUTPUT)
-	e2neutrino convert --input tests/fixtures/enigma_golden --output $(SAMPLE_OUTPUT)
-	cp $(SAMPLE_OUTPUT)/services.xml tests/fixtures/golden/services.xml
-	cp $(SAMPLE_OUTPUT)/bouquets.xml tests/fixtures/golden/bouquets.xml
+clean:
+	rm -rf $(VENV) build dist out *.egg-info
