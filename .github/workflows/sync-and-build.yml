@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      ENV_GLOBAL: ${{ secrets.ENV_GLOBAL }}
+      PUBLISH_TOKEN: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' && secrets.PAT_PUSH_NEUTRINO_SETTINGS || secrets.ENV_GLOBAL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -99,15 +99,15 @@ jobs:
           if-no-files-found: error
 
       - name: Checkout target repository
-        if: ${{ env.ENV_GLOBAL != '' }}
+        if: ${{ env.PUBLISH_TOKEN != '' }}
         uses: actions/checkout@v4
         with:
           repository: ${{ env.TARGET_REPOSITORY }}
-          token: ${{ env.ENV_GLOBAL }}
+          token: ${{ env.PUBLISH_TOKEN }}
           path: target
 
       - name: Sync generated bundles
-        if: ${{ env.ENV_GLOBAL != '' }}
+        if: ${{ env.PUBLISH_TOKEN != '' }}
         run: |
           set -euo pipefail
           mkdir -p target/releases

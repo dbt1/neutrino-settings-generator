@@ -12,9 +12,17 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_PLEASE_TOKEN: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' && secrets.PAT_PUSH_NEUTRINO_SETTINGS || secrets.ENV_GLOBAL }}
     steps:
+      - name: Ensure release token present
+        run: |
+          if [ -z "${RELEASE_PLEASE_TOKEN:-}" ]; then
+            echo "Release token not configured. Please set PAT_PUSH_NEUTRINO_SETTINGS or ENV_GLOBAL." >&2
+            exit 1
+          fi
       - uses: googleapis/release-please-action@v4
         with:
-          token: ${{ secrets.ENV_GLOBAL }}
+          token: ${{ env.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
