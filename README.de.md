@@ -83,7 +83,8 @@ e2neutrino ingest \
   --cache /tmp/e2n-cache
 ```
 
-- Lädt Upstream-Quellen (git/http/file) über Adapter in `e2neutrino/adapters/`.
+- Lädt Beispielquellen über Adapter in `e2neutrino/adapters/`.
+- Die Standard-Konfiguration verweist auf lokale Fixtures (`samples/`, `tests/fixtures/`), damit CI ohne Netzwerkzugriff funktioniert. Für den Produktivbetrieb die Einträge entsprechend austauschen, bevor Nightly-Syncs aktiviert werden.
 - Normalisiert Daten zu Enigma2-Profilen, die anschließend konvertiert werden.
 
 Beide Befehle unterstützen `--verbose` (Root-Option) für detailliertes Logging.

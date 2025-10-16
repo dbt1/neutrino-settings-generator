@@ -83,7 +83,8 @@ e2neutrino ingest \
   --cache /tmp/e2n-cache
 ```
 
-- Fetches upstream sources (git/http/file) using adapters in `e2neutrino/adapters/`.
+- Fetches sample sources using adapters in `e2neutrino/adapters/`.
+- The default configuration references local fixtures (`samples/`, `tests/fixtures/`) so CI can run offline; replace entries with production sources before enabling nightly syncs or committing secrets.
 - Normalises data into Enigma2-like profiles for subsequent conversion.
 
 Both commands honour `--verbose` on the root group for debug logging.
