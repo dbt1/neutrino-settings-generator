@@ -125,18 +125,17 @@ Die englische Anleitung befindet sich in `README.en.md`.
 ## Repository-Aufbau
 
 ```
-converter/
-  e2neutrino/         # Paket-Code & Adapter
-  tests/              # Pytest-Suite inkl. Golden-Fixtures
-  samples/            # Beispiel-Enigma2-Profil
-  examples/           # Quellen- und Name-Map-Beispiele
-  .github/workflows/  # CI/CD, Release, Nightly Sync
-  Dockerfile          # Multi-Stage-Builder/Runtime-Image
-  Makefile            # Entwickler-Tasks
-  pyproject.toml      # PEP-621-Metadaten & Abhängigkeiten
+.github/workflows/  # CI/CD, Release, Nightly Sync
+e2neutrino/         # Paket-Code & Adapter
+tests/              # Pytest-Suite inkl. Golden-Fixtures
+samples/            # Beispiel-Enigma2-Profil
+examples/           # Quellen- und Name-Map-Beispiele
+scripts/            # Helfer-Skripte (Packaging, Tooling)
+Dockerfile          # Multi-Stage-Builder/Runtime-Image
+Makefile            # Entwickler-Tasks
+pyproject.toml      # PEP-621-Metadaten & Abhängigkeiten
+requirements.txt    # Fixierte Laufzeit- und Tool-Abhängigkeiten
 ```
-
-Das Schwesterverzeichnis `neutrino-settings/` dient als Ziel für nächtliche Artefakt-Publikationen (ZIPs, Checksums).
 
 ### Ziel-Repository-Struktur
 

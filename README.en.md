@@ -125,18 +125,17 @@ German guidance is mirrored in `README.de.md`.
 ## Repository Layout
 
 ```
-converter/
-  e2neutrino/         # Package code & adapters
-  tests/              # Pytest suite with golden fixtures
-  samples/            # Example Enigma2 profile
-  examples/           # Sources and name-map examples
-  .github/workflows/  # CI/CD, release, nightly sync
-  Dockerfile          # Multi-stage builder/runtime image
-  Makefile            # Local developer ergonomics
-  pyproject.toml      # PEP 621 metadata + dependencies
+.github/workflows/  # CI/CD, release, nightly sync
+e2neutrino/         # Package code & adapters
+tests/              # Pytest suite with golden fixtures
+samples/            # Example Enigma2 profile
+examples/           # Sources and name-map examples
+scripts/            # Helper scripts (packaging, tooling)
+Dockerfile          # Multi-stage builder/runtime image
+Makefile            # Local developer ergonomics
+pyproject.toml      # PEP 621 metadata + dependencies
+requirements.txt    # Locked tooling/runtime deps
 ```
-
-The sibling directory `neutrino-settings/` is the publication target for nightly builds (artefacts, zipped releases).
 
 ### Target Repository Structure
 
@@ -159,7 +158,7 @@ neutrino-settings/
       RELEASEINFO.json
 ```
 
-The nightly workflow keeps the `generated/` tree in sync with the latest conversion outputs and writes dated ZIP bundles plus checksums into `releases/`.
+The nightly workflow keeps the `generated/` tree in sync with the latest conversion outputs and writes dated ZIP bundles plus checksums into `releases/`. The separate `neutrino-settings` repository receives these updates.
 
 ## Links & Further Reading
 

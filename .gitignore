@@ -1,1 +1,29 @@
 .directory
+
+# Python / Build
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+.venv/
+
+# Local tooling
+.idea/
+.vscode/
+.DS_Store
+
+# Work dirs
+work/
+.cache/
+out/
+build/
+releases/
+
+# Coverage / Reports
+.coverage
+coverage.xml
+htmlcov/
