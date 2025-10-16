@@ -117,7 +117,7 @@ See `.github/workflows/*.yml` for full definitions. Nightly artefacts can be pub
 6. **Nightly Sync:** Wait for the 02:00 UTC cron or trigger **Run workflow** on `Sync and Build`. Download artefacts and verify checksums.
 
 Troubleshooting tips:
-- Workflows missing → confirm files reside in `.github/workflows/` on the `main` branch.
+- Workflows missing → confirm files reside in `.github/workflows/` on the `master` branch.
 - Releases not created → ensure the PAT/deploy key has `contents: write` scope and that the `Release` workflow completed.
 - Build failures → inspect logs (`Actions → run → job → step`). Fix lint/test failures locally using `make lint test`.
 

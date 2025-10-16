@@ -117,7 +117,7 @@ Details stehen in `.github/workflows/*.yml`. Nächtliche Artefakte lassen sich p
 6. **Nightly Sync:** Auf den Cron um 02:00 UTC warten oder **Run workflow** auf `Sync and Build` auslösen. Artefakte herunterladen und Checksums prüfen.
 
 Troubleshooting:
-- Workflows fehlen → Liegen die Dateien in `.github/workflows/` auf `main`?
+- Workflows fehlen → Liegen die Dateien in `.github/workflows/` auf `master`?
 - Release erzeugt nichts → Besitzt das Secret `contents: write` und ist der Workflow erfolgreich durchgelaufen?
 - Build schlägt fehl → Logs öffnen (`Actions → Run → Job → Step`) und Lint/Test-Fehler lokal via `make lint test` beheben.
 
