@@ -249,6 +249,8 @@ def _filter_bouquets(
                 entries.append(BouquetEntry(service_ref=entry.service_ref, name=entry.name))
         if entries:
             filtered.append(Bouquet(name=bouquet.name, entries=entries, category=bouquet.category))
+    if not filtered:
+        return _generate_auto_bouquets(services)
     return sorted(filtered, key=lambda b: b.name.lower())
 
 
@@ -261,6 +263,16 @@ def _service_ref_to_key(service_ref: str) -> str:
     onid = parts[5]
     namespace = parts[6]
     return f"{namespace.lower()}:{tsid.lower()}:{onid.lower()}:{int(sid, 16):04x}"
+
+
+def _service_to_ref(service: Service) -> str:
+    return (
+        f"1:0:{service.service_type}:"
+        f"{service.service_id:04x}:"
+        f"{service.transport_stream_id:04x}:"
+        f"{service.original_network_id:04x}:"
+        f"{service.namespace:08x}:0:0:0:"
+    )
 
 
 def _write_group(group: OutputGroup, out_path: Path, options: ConversionOptions, metadata: Mapping[str, str]) -> None:
@@ -470,3 +482,116 @@ def _merge_bouquets(bouquets: Sequence[Bouquet]) -> List[Bouquet]:
         bouquet.entries.sort(key=lambda entry: entry.service_ref)
     result.sort(key=lambda b: b.name.lower())
     return result
+
+
+def _generate_auto_bouquets(services: Sequence[Service]) -> List[Bouquet]:
+    tv_services = [svc for svc in services if not svc.is_radio]
+    radio_services = [svc for svc in services if svc.is_radio]
+
+    def _sorted_unique(items: Iterable[Service]) -> List[Service]:
+        seen = set()
+        ordered: List[Service] = []
+        for svc in sorted(items, key=lambda item: (item.name.lower(), item.service_id)):
+            if svc.key in seen:
+                continue
+            seen.add(svc.key)
+            ordered.append(svc)
+        return ordered
+
+    def _entries(items: Iterable[Service]) -> List[BouquetEntry]:
+        entries: List[BouquetEntry] = []
+        seen_refs: Set[str] = set()
+        for svc in _sorted_unique(items):
+            ref = _service_to_ref(svc)
+            if ref in seen_refs:
+                continue
+            seen_refs.add(ref)
+            entries.append(BouquetEntry(service_ref=ref, name=svc.name))
+        return entries
+
+    bouquets: List[Bouquet] = []
+
+    if tv_services:
+        free_tv = [svc for svc in tv_services if not svc.caids]
+        pay_tv = [svc for svc in tv_services if svc.caids]
+        hd_types = {0x11, 0x16, 0x19, 0x1A, 0x1F, 0x20, 0x21, 0x22, 0x86}
+        uhd_types = {0x1F, 0x20, 0x21, 0x22, 0x87}
+        free_hd = [svc for svc in free_tv if svc.service_type in hd_types]
+        free_uhd = [svc for svc in free_tv if svc.service_type in uhd_types]
+        pay_hd = [svc for svc in pay_tv if svc.service_type in hd_types]
+
+        public_keywords = {
+            "ARD",
+            "ZDF",
+            "ORF",
+            "SRF",
+            "SRG",
+            "3SAT",
+            "ARTE",
+            "PHOENIX",
+            "TAGESSCHAU",
+            "KIKA",
+            "DEUTSCHLANDRADIO",
+            "WDR",
+            "NDR",
+            "MDR",
+            "RBB",
+            "HR",
+            "SWR",
+            "BR",
+        }
+
+        def _is_public_service(svc: Service) -> bool:
+            name_upper = svc.name.upper()
+            provider_upper = (svc.provider or "").upper()
+            return any(keyword in name_upper or keyword in provider_upper for keyword in public_keywords)
+
+        public_tv = [svc for svc in free_tv if _is_public_service(svc)]
+        private_tv = [svc for svc in free_tv if svc not in public_tv]
+
+        bouquet_recipes = [
+            ("TV – Free", free_tv),
+            ("TV – Free HD", free_hd),
+            ("TV – Free UHD", free_uhd),
+            ("TV – Public Service", public_tv),
+            ("TV – Private", private_tv),
+            ("TV – Pay", pay_tv),
+            ("TV – Pay HD", pay_hd),
+        ]
+
+        for name, svc_list in bouquet_recipes:
+            entries = _entries(svc_list)
+            if entries:
+                bouquets.append(Bouquet(name=name, entries=entries, category="tv"))
+
+        provider_map: Dict[str, List[Service]] = defaultdict(list)
+        for svc in tv_services:
+            if svc.provider:
+                provider_map[svc.provider].append(svc)
+        for provider, svc_list in sorted(provider_map.items(), key=lambda item: item[0].upper()):
+            entries = _entries(svc_list)
+            if entries:
+                bouquets.append(Bouquet(name=f"TV – Provider: {provider}", entries=entries, category="tv"))
+
+    if radio_services:
+        free_radio = [svc for svc in radio_services if not svc.caids]
+        pay_radio = [svc for svc in radio_services if svc.caids]
+        radio_recipes = [
+            ("Radio – Free", free_radio),
+            ("Radio – Pay", pay_radio),
+        ]
+        for name, svc_list in radio_recipes:
+            entries = _entries(svc_list)
+            if entries:
+                bouquets.append(Bouquet(name=name, entries=entries, category="radio"))
+
+        provider_radio: Dict[str, List[Service]] = defaultdict(list)
+        for svc in radio_services:
+            if svc.provider:
+                provider_radio[svc.provider].append(svc)
+        for provider, svc_list in sorted(provider_radio.items(), key=lambda item: item[0].upper()):
+            entries = _entries(svc_list)
+            if entries:
+                bouquets.append(Bouquet(name=f"Radio – Provider: {provider}", entries=entries, category="radio"))
+
+    return sorted(bouquets, key=lambda bouquet: bouquet.name.lower())
