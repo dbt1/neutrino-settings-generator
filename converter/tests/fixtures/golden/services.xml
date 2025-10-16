@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<zapit api="4">
+  <satellites>
+    <satellite key="00c00000:0419:0001" name="00c00000:0419:0001" namespace="0x00c00000" position="19.2">
+      <transponder key="00c00000:0419:0001" frequency="10714000" symbol_rate="22000000" polarization="H" fec="3" system="0" modulation="1">
+        <service id="0x012e" sid="302" name="Another Channel" type="1" provider="Another Provider" onid="1" tsid="1049" namespace="0x00c00000" />
+        <service id="0x012d" sid="301" name="Test Channel HD" type="1" provider="Test Provider" onid="1" tsid="1049" namespace="0x00c00000" />
+      </transponder>
+    </satellite>
+  </satellites>
+  <cables>
+    <cable key="00000001:0001:0001" name="00000001:0001:0001" namespace="0x00000001">
+      <transponder key="00000001:0001:0001" frequency="378000" symbol_rate="6900000" polarization="H" fec="0" system="0" modulation="">
+        <service id="0x03e9" sid="1001" name="Cable One" type="1" provider="CableCo" onid="1" tsid="1" namespace="0x00000001" />
+      </transponder>
+    </cable>
+  </cables>
+</zapit>

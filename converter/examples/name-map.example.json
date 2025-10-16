@@ -1,0 +1,17 @@
+{
+  "sat": {
+    "S19.2E": "Astra-19.2E",
+    "S13E": "Hotbird-13.0E",
+    "S9E": "Eutelsat-9.0E"
+  },
+  "cable": {
+    "vodafone": "Vodafone-DE",
+    "pyur": "PYUR-DE",
+    "unitymedia": "Unitymedia-legacy"
+  },
+  "terrestrial": {
+    "de-be": "DE-Berlin",
+    "de-by": "DE-Bavaria",
+    "at-9": "AT-Wien"
+  }
+}

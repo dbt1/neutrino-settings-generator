@@ -1,0 +1,2 @@
+#SERVICE sid=0x012d onid=0x0001 tsid=0x0419 namespace=0x00c00000 name="Test Channel HD" type=1 delivery=sat frequency=10714000 symbol_rate=22000000 orbital=19.2 provider="Test Provider"
+#SERVICE sid=0x0320 onid=0x0001 tsid=0x0419 namespace=0x00c00000 name="Sample SD" type=1 delivery=sat frequency=10714000 symbol_rate=22000000 orbital=19.2 provider="Test Provider"

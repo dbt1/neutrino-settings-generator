@@ -1,0 +1,22 @@
+{
+  "channels": [
+    {
+      "sid": "0x2000",
+      "onid": "0x0001",
+      "tsid": "0x0419",
+      "namespace": "0x00c00000",
+      "name": "JSON One",
+      "service_type": 1,
+      "provider": "JSON Provider"
+    },
+    {
+      "sid": "0x2001",
+      "onid": "0x0001",
+      "tsid": "0x0419",
+      "namespace": "0x00c00000",
+      "name": "JSON Two",
+      "service_type": 1,
+      "provider": "JSON Provider"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+eDVB services /4/
+transponders
+00c00000:0419:0001
+	s 10714000:22000000:0:3:192:2:0:1:2:0:2
+/
+services
+012d:00c00000:0419:0001:1:0
+Sample Demo HD
+p:Demo Provider
+/
+end

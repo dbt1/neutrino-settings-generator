@@ -1,0 +1,36 @@
+sources:
+  - id: oe-alliance
+    type: git
+    url: https://github.com/oe-alliance/oe-alliance-settings
+    adapter: enigma2
+    include:
+      - "**/enigma2/world/**"
+    license_allow:
+      - MIT
+      - BSD
+      - GPL-2.0
+      - GPL-3.0
+  - id: provider-vodafone
+    type: http
+    url: https://official.example.com/vodafone/channel_list.json
+    adapter: jsonapi
+    json_pointer: /channels
+    mapping:
+      name: name
+      sid: sid
+      onid: onid
+      tsid: tsid
+      namespace: namespace
+      service_type: service_type
+    license_allow:
+      - permitted-by-provider
+    cache_ttl: 86400
+  - id: dvbsi-scan
+    type: file
+    path: fixtures/dvbsi/sample_sdt_nit.dump
+    adapter: dvbsi
+    params:
+      country: DE
+      region: BE
+    license_allow:
+      - personal-scan

@@ -1,0 +1,11 @@
+eDVB services /5/
+transponders
+00c00000:0540:0001
+	s:11954000:22000000:0:3:192:2:0:1:2:0:2
+/
+services
+1abc:00c00000:0540:0001:1:0
+Sample Five Service
+p:Five Provider
+/
+end
