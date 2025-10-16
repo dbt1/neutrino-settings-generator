@@ -25,6 +25,7 @@ Store secrets under `Settings → Secrets and variables → Actions`. Rotate tok
 2. Artefacts are uploaded via `actions/upload-artifact`.
 3. Optional publish: extend workflow with a deployment step pushing artefacts into `neutrino-settings`. Use the stored secret and document the destination path (`releases/YYYY-MM-DD/`).
 4. Checksum file (`sha256sum`) is generated per release folder.
+5. Friendly package names and curated subsets are controlled via `metadata/packages.yml`; metadata for every bundle is exported to `packages_manifest.json` for downstream automation.
 
 ### Monitoring & Alerts
 
@@ -69,6 +70,7 @@ Secrets unter `Settings → Secrets and variables → Actions` speichern und min
 2. Artefakte werden per `actions/upload-artifact` hochgeladen.
 3. Optionale Veröffentlichung: Workflow um einen Deploy-Schritt erweitern, der Artefakte nach `neutrino-settings` pusht. Secret nutzen und Zielpfad (`releases/YYYY-MM-DD/`) dokumentieren.
 4. Für jeden Releasetag wird eine `sha256sum`-Datei erstellt.
+5. Benutzerfreundliche Paketnamen sowie kuratierte Teilpakete werden über `metadata/packages.yml` gesteuert; die zugehörigen Metadaten landen als `packages_manifest.json` bei den ZIP-Artefakten und können von Automatisierungen ausgewertet werden.
 
 ### Monitoring & Alerts
 

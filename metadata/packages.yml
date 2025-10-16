@@ -1,0 +1,83 @@
+packages:
+  - package_id: astra-19e-demo-full
+    source_id: fixture-dvbsi
+    profile_id: sample_sdt_nit
+    display_name: "Astra 19.2E Demo - Services And Bouquets"
+    description: "Demo bundle with services.xml and bouquets.xml for Astra 19.2E."
+    include:
+      - services.xml
+      - bouquets.xml
+      - BUILDINFO.json
+    satellites:
+      - "Astra 19.2E"
+    receivers:
+      - "Neutrino"
+    tags:
+      - demo
+      - satellite
+    content_summary: "services.xml, bouquets.xml, BUILDINFO.json"
+
+  - package_id: astra-19e-demo-services
+    source_id: fixture-dvbsi
+    profile_id: sample_sdt_nit
+    display_name: "Astra 19.2E Demo - Services Only"
+    description: "Demo bundle with services.xml for Astra 19.2E."
+    include:
+      - services.xml
+      - BUILDINFO.json
+    satellites:
+      - "Astra 19.2E"
+    receivers:
+      - "Neutrino"
+    tags:
+      - demo
+      - satellite
+    content_summary: "services.xml, BUILDINFO.json"
+
+  - package_id: astra-19e-demo-bouquets
+    source_id: fixture-dvbsi
+    profile_id: sample_sdt_nit
+    display_name: "Astra 19.2E Demo - Bouquets Only"
+    description: "Demo bundle with bouquets.xml for Astra 19.2E."
+    include:
+      - bouquets.xml
+      - BUILDINFO.json
+    satellites:
+      - "Astra 19.2E"
+    receivers:
+      - "Neutrino"
+    tags:
+      - demo
+      - satellite
+    content_summary: "bouquets.xml, BUILDINFO.json"
+
+  - package_id: sample-enigma2-demo-full
+    source_id: sample-enigma2
+    profile_id: enigma2_profile_example
+    display_name: "Sample Enigma2 Profile - Full Output"
+    description: "Demo conversion of the bundled Enigma2 example profile."
+    include:
+      - services.xml
+      - bouquets.xml
+      - BUILDINFO.json
+    receivers:
+      - "Neutrino"
+    tags:
+      - demo
+    content_summary: "services.xml, bouquets.xml, BUILDINFO.json"
+
+  - package_id: fixture-json-demo-full
+    source_id: fixture-json
+    profile_id: fixture-json
+    display_name: "Sample JSON API - Cable Demo"
+    description: "Synthetic cable profile generated from the JSON API fixture."
+    include:
+      - services.xml
+      - bouquets.xml
+      - BUILDINFO.json
+    receivers:
+      - "Neutrino"
+    tags:
+      - demo
+      - cable
+    content_summary: "services.xml, bouquets.xml, BUILDINFO.json"
