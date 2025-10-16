@@ -98,6 +98,13 @@ jobs:
           path: publish/releases/*/*
           if-no-files-found: error
 
+      - name: Ensure publish token present
+        run: |
+          if [ -z "${PUBLISH_TOKEN:-}" ]; then
+            echo "Publish token not configured. Set PAT_PUSH_NEUTRINO_SETTINGS or ENV_GLOBAL (secret or variable)." >&2
+            exit 1
+          fi
+
       - name: Checkout target repository
         if: ${{ env.PUBLISH_TOKEN != '' }}
         uses: actions/checkout@v4
