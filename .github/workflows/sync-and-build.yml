@@ -124,6 +124,7 @@ jobs:
             mkdir -p target/generated
             rsync -av --delete publish/generated/ target/generated/
           fi
+          python scripts/generate_target_readme.py publish target
           cd target
           echo "Active remotes:"
           git remote -v
