@@ -33,18 +33,18 @@ jobs:
         id: find
         run: |
           python <<'PY'
-import json
-import os
-from pathlib import Path
+          import json
+          import os
+          from pathlib import Path
 
-base = Path("work/ingest")
-profiles = [str(path) for path in base.glob("*/*/enigma2") if path.is_dir()]
-if not profiles:
-    raise SystemExit("No profiles discovered; verify ingest configuration.")
-output = Path(os.environ["GITHUB_OUTPUT"])
-with output.open("a", encoding="utf-8") as fh:
-    fh.write(f"list={json.dumps(profiles)}\n")
-PY
+          base = Path("work/ingest")
+          profiles = [str(path) for path in base.glob("*/*/enigma2") if path.is_dir()]
+          if not profiles:
+              raise SystemExit("No profiles discovered; verify ingest configuration.")
+          output = Path(os.environ["GITHUB_OUTPUT"])
+          with output.open("a", encoding="utf-8") as fh:
+              fh.write(f"list={json.dumps(profiles)}\n")
+          PY
         shell: bash
 
       - name: Convert profiles
@@ -54,36 +54,36 @@ PY
           set -euo pipefail
           mkdir -p out
           python <<'PY'
-import json
-import os
-import shutil
-from pathlib import Path
-from subprocess import run
+          import json
+          import os
+          import shutil
+          from pathlib import Path
+          from subprocess import run
 
-profiles = json.loads(os.environ["PROFILE_LIST"])
-for profile in profiles:
-    profile_path = Path(profile)
-    src_id = profile_path.parents[1].name
-    prof_id = profile_path.parent.name
-    out_dir = Path("out") / src_id / prof_id / "ALL"
-    out_dir.parent.mkdir(parents=True, exist_ok=True)
-    args = [
-        "e2neutrino",
-        "convert",
-        "--input",
-        str(profile_path),
-        "--output",
-        str(out_dir),
-        "--api-version",
-        "4",
-    ]
-    result = run(args, check=False)
-    if result.returncode != 0:
-        raise SystemExit(result.returncode)
-    buildinfo = profile_path.parent / "BUILDINFO.json"
-    if buildinfo.exists():
-        shutil.copy2(buildinfo, out_dir.parent / "BUILDINFO.json")
-PY
+          profiles = json.loads(os.environ["PROFILE_LIST"])
+          for profile in profiles:
+              profile_path = Path(profile)
+              src_id = profile_path.parents[1].name
+              prof_id = profile_path.parent.name
+              out_dir = Path("out") / src_id / prof_id / "ALL"
+              out_dir.parent.mkdir(parents=True, exist_ok=True)
+              args = [
+                  "e2neutrino",
+                  "convert",
+                  "--input",
+                  str(profile_path),
+                  "--output",
+                  str(out_dir),
+                  "--api-version",
+                  "4",
+              ]
+              result = run(args, check=False)
+              if result.returncode != 0:
+                  raise SystemExit(result.returncode)
+              buildinfo = profile_path.parent / "BUILDINFO.json"
+              if buildinfo.exists():
+                  shutil.copy2(buildinfo, out_dir.parent / "BUILDINFO.json")
+          PY
 
       - name: Package outputs
         run: |
