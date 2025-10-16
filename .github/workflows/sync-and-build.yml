@@ -130,11 +130,11 @@ jobs:
           git config user.name "Thilo Graf"
           git config user.email "dbt@novatux.de"
           git status --short
-          if git diff --quiet; then
+          if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit."
             exit 0
           fi
-          git add .
+          git add --all
           git commit -m "ci: nightly settings update"
           git status --short
           echo "Pushing updates to ${TARGET_REPOSITORY}"
