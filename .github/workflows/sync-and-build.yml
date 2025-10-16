@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      PUBLISH_TOKEN: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' && secrets.PAT_PUSH_NEUTRINO_SETTINGS || secrets.ENV_GLOBAL }}
+      PUBLISH_TOKEN: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' && secrets.PAT_PUSH_NEUTRINO_SETTINGS || secrets.ENV_GLOBAL != '' && secrets.ENV_GLOBAL || vars.ENV_GLOBAL }}
     steps:
       - uses: actions/checkout@v4
 
