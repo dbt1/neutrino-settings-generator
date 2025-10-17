@@ -105,6 +105,18 @@ def ingest(
             continue
         _ensure_source_allowed(source, bundle.allow_hosts)
         workspace = _prepare_workspace(out_dir, source_id, cache_dir)
+        source_type = str(source.get("type", "file")).lower()
+        if source_type == "blocked":
+            log.warning("source %s marked as blocked; skipping ingestion", source_id)
+            provenance_record: Dict[str, Any] = {
+                "source_id": source_id,
+                "type": "blocked",
+                "note": str(source.get("note") or ""),
+                "blocked_at": _iso_now(),
+            }
+            _write_json_atomic(workspace.provenance_path, provenance_record)
+            _finalise_workspace(workspace, "blocked", {"reason": "blocked"})
+            continue
         try:
             outcome = _fetch_source(source, workspace, bundle.allow_hosts)
             adapter_name = str(source.get("adapter", "enigma2"))
