@@ -41,8 +41,18 @@ def _entry(
 
 def test_normalize_scan_entries_deduplicates_and_groups() -> None:
     entries = [
-        _entry(provider="vodafone-de", frequency=450_000_000, symbol_rate=6_900_000, last_seen="2024-12-01T00:00:00+00:00"),
-        _entry(provider="vodafone-de", frequency=450_000_000, symbol_rate=6_900_000, last_seen="2025-01-01T00:00:00+00:00"),
+        _entry(
+            provider="vodafone-de",
+            frequency=450_000_000,
+            symbol_rate=6_900_000,
+            last_seen="2024-12-01T00:00:00+00:00",
+        ),
+        _entry(
+            provider="vodafone-de",
+            frequency=450_000_000,
+            symbol_rate=6_900_000,
+            last_seen="2025-01-01T00:00:00+00:00",
+        ),
         _entry(region="de-berlin", frequency=482_000_000, bandwidth=8_000_000),
     ]
 
@@ -59,7 +69,12 @@ def test_normalize_scan_entries_deduplicates_and_groups() -> None:
 
 def test_write_scanfiles_creates_neutrino_xml(tmp_path: Path) -> None:
     entries = [
-        _entry(provider="vodafone-de", frequency=450_000_000, symbol_rate=6_900_000, last_seen="2025-01-01T00:00:00+00:00"),
+        _entry(
+            provider="vodafone-de",
+            frequency=450_000_000,
+            symbol_rate=6_900_000,
+            last_seen="2025-01-01T00:00:00+00:00",
+        ),
         _entry(region="de-berlin", frequency=482_000_000, bandwidth=8_000_000),
     ]
     result = normalize_scan_entries(entries)
@@ -93,7 +108,11 @@ def test_write_scanfiles_strict_failure(tmp_path: Path) -> None:
 
 
 def test_blocked_adapter_registered() -> None:
-    from e2neutrino.adapters.provider_vodafone_de import BLOCKED_MESSAGE, ProviderVodafoneDEAdapter, VodafoneBlockedError
+    from e2neutrino.adapters.provider_vodafone_de import (
+        BLOCKED_MESSAGE,
+        ProviderVodafoneDEAdapter,
+        VodafoneBlockedError,
+    )
 
     adapter = ProviderVodafoneDEAdapter()
     with pytest.raises(VodafoneBlockedError) as exc:

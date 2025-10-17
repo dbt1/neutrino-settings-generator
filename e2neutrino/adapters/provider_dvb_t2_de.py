@@ -46,7 +46,7 @@ class ProviderDVBT2DEAdapter(BaseAdapter):
             provenance_sources.append(pdf_path.name)
             for record in _parse_records(text):
                 region_code = _build_region_code(record.state, record.site)
-                for idx, channel in enumerate(record.channels):
+                for channel in record.channels:
                     frequency_hz = _channel_to_frequency(channel)
                     if frequency_hz is None:
                         continue

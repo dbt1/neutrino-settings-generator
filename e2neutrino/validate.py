@@ -209,6 +209,12 @@ def _validate_bouquets_xml(path: Path) -> None:
     if root.tag != "zapit":
         raise ValidationError("bouquets.xml root element must be <zapit>")
     bouquets = root.findall("bouquet")
+    if not bouquets:
+        raise ValidationError("bouquets.xml contains no <bouquet> entries")
+    for bouquet in bouquets:
+        for channel in bouquet.findall("channel"):
+            if not channel.get("service_ref"):
+                raise ValidationError("bouquets.xml contains channel without service_ref")
 
 
 def _validate_scanfiles(output_dir: Path) -> None:
@@ -303,7 +309,16 @@ def _parse_terrestrial_scanfile(path: Path) -> Dict[str, object]:
 
 
 def _parse_cable_transponder(element: ET.Element) -> Dict[str, object]:
-    known = {"frequency", "symbol_rate", "bandwidth", "bandwidth_hz", "modulation", "fec_inner", "polarization", "system"}
+    known = {
+        "frequency",
+        "symbol_rate",
+        "bandwidth",
+        "bandwidth_hz",
+        "modulation",
+        "fec_inner",
+        "polarization",
+        "system",
+    }
     freq_attr = element.get("frequency")
     if not freq_attr:
         raise ValidationError("cable.xml transponder missing frequency attribute")
@@ -440,9 +455,3 @@ def _to_non_negative_int(value: str) -> int:
     if result < 0:
         raise ValidationError(f"value must be non-negative integer, got {value!r}")
     return result
-    if not bouquets:
-        raise ValidationError("bouquets.xml contains no <bouquet> entries")
-    for bouquet in bouquets:
-        for channel in bouquet.findall("channel"):
-            if not channel.get("service_ref"):
-                raise ValidationError("bouquets.xml contains channel without service_ref")

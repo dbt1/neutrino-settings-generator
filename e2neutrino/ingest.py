@@ -24,7 +24,7 @@ import requests
 import yaml
 
 from . import __version__, io_enigma
-from .adapters import AdapterResult, get_adapter
+from .adapters import get_adapter
 from .logging_conf import configure_logging
 from .models import Profile, TransponderScanEntry
 

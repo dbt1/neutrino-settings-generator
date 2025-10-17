@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Optional, Tuple
 from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Tuple
 from xml.etree import ElementTree as ET
 
 from ..models import ConversionOptions, TransponderScanEntry
