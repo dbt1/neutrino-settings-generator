@@ -121,7 +121,8 @@ def convert(input_path: Path, output_path: Path, options: ConversionOptions) -> 
         terrestrial=options.min_services_terrestrial,
     )
     if options.abort_on_empty:
-        validate.assert_minimums(report.stats, thresholds)
+        active_deliveries = {trans.delivery for trans in profile.transponders.values()}
+        validate.assert_minimums(report.stats, thresholds, active_deliveries)
 
     profile.metadata["stats"] = json.dumps(report.stats.to_dict(), sort_keys=True)
     profile.metadata["thresholds"] = json.dumps(thresholds.to_dict(), sort_keys=True)

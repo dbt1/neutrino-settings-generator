@@ -285,12 +285,11 @@ def _fetch_git_source(source: Dict[str, Any], workspace: SourceWorkspace) -> Fet
         if not (target_root / ".git").exists():
             _clear_directory(target_root)
     if not (target_root / ".git").exists():
-        args = ["clone", "--depth=1", "--filter=blob:none", "--sparse"]
+        args = ["clone", "--depth=1", "--filter=blob:none"]
         if ref and ref not in {"HEAD"} and not _looks_like_commit(ref):
             args.extend(["--branch", ref])
         args.extend([url, str(target_root)])
         _run_git(args)
-        _run_git(["sparse-checkout", "set", "*enigma2*"], cwd=target_root)
     else:
         fetch_cmd = ["fetch", "--depth", "1", "origin"]
         if ref and ref not in {"", "HEAD"}:
@@ -304,7 +303,6 @@ def _fetch_git_source(source: Dict[str, Any], workspace: SourceWorkspace) -> Fet
             checkout_target = f"origin/{ref}"
         _run_git(["checkout", "--detach", checkout_target], cwd=target_root)
         _run_git(["reset", "--hard", checkout_target], cwd=target_root)
-        _run_git(["sparse-checkout", "set", "*enigma2*"], cwd=target_root)
 
     commit = _run_git(["rev-parse", "HEAD"], cwd=target_root, capture_output=True).strip()
     commit_date = _run_git(["show", "-s", "--format=%cI", "HEAD"], cwd=target_root, capture_output=True).strip()
@@ -578,6 +576,7 @@ def _looks_like_commit(ref: str) -> bool:
         return False
     allowed = set("0123456789abcdef")
     return all(char in allowed for char in ref.lower())
+
 
 
 def _run_git(args: List[str], cwd: Optional[Path] = None, capture_output: bool = False) -> str:

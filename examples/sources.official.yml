@@ -13,6 +13,4 @@ sources:
     type: git
     url: https://github.com/oe-alliance/oe-alliance-settings
     adapter: enigma2
-    include:
-      - "settings/*/enigma2"
     priority: 10

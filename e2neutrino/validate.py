@@ -94,13 +94,14 @@ def validate_profile(profile: Profile) -> ValidationReport:
     return ValidationReport(warnings=warnings, stats=stats, duplicates=duplicates)
 
 
-def assert_minimums(stats: ProfileStats, thresholds: Thresholds) -> None:
+def assert_minimums(stats: ProfileStats, thresholds: Thresholds, active: set[str] | None = None) -> None:
     errors: List[str] = []
-    if thresholds.sat > 0 and stats.sat_services < thresholds.sat:
+    active = active or set()
+    if thresholds.sat > 0 and "sat" in active and stats.sat_services < thresholds.sat:
         errors.append(f"sat services {stats.sat_services} below minimum {thresholds.sat}")
-    if thresholds.cable > 0 and stats.cable_services < thresholds.cable:
+    if thresholds.cable > 0 and "cable" in active and stats.cable_services < thresholds.cable:
         errors.append(f"cable services {stats.cable_services} below minimum {thresholds.cable}")
-    if thresholds.terrestrial > 0 and stats.terrestrial_services < thresholds.terrestrial:
+    if thresholds.terrestrial > 0 and "terrestrial" in active and stats.terrestrial_services < thresholds.terrestrial:
         errors.append(
             f"terrestrial services {stats.terrestrial_services} below minimum {thresholds.terrestrial}"
         )
