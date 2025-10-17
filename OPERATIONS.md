@@ -91,3 +91,8 @@ Secrets unter `Settings → Secrets and variables → Actions` speichern und min
 - PAT/Deploy Keys bei Kompromittierung neu generieren.
 - `Sync and Build` manuell starten, um Artefakte erneut zu erzeugen.
 - Dank Versions-Tags genügt `git checkout vX.Y.Z && make build`, um Builds reproduzierbar wiederherzustellen.
+
+
+## Vodafone DVB-C
+
+Vodafone Germany does not publish an official DVB-C frequency table including MHz/Symbolrate/Modulation. The adapter `provider_vodafone_de` therefore remains blocked until an authorised source is available. QA/CI will raise a descriptive failure when the adapter is requested. For parser tests use official fixtures from other operators (e.g. wilhelm.tel) without rebranding them as Vodafone outputs.

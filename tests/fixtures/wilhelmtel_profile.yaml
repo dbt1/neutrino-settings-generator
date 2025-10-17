@@ -1,0 +1,20 @@
+source_id: wilhelmtel-fixture
+regions:
+  - id: wlhm-de-norderstedt
+    provider: wilhelm.tel
+    entries:
+      - channel: 114
+        frequency_mhz: 762
+        symbol_rate_ksps: 6900
+        modulation: QAM256
+      - channel: 122
+        frequency_mhz: 818
+        symbol_rate_ksps: 6900
+        modulation: QAM256
+  - id: wlhm-de-hamburg
+    provider: wilhelm.tel
+    entries:
+      - channel: 122
+        frequency_mhz: 818
+        symbol_rate_ksps: 6900
+        modulation: QAM256

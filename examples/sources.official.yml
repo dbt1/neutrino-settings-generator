@@ -8,6 +8,11 @@ allow_hosts:
   - raw.githubusercontent.com
 
 sources:
+  - id: provider-vodafone-de
+    name: Vodafone DE (blocked)
+    type: blocked
+    adapter: provider_vodafone_de
+    note: Vodafone publishes no official DVB-C frequency table with MHz/Symbolrate/Modulation.
   - id: oe-alliance
     name: OE-Alliance Settings
     type: git

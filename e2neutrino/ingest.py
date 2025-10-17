@@ -24,9 +24,9 @@ import requests
 import yaml
 
 from . import __version__, io_enigma
-from .adapters import get_adapter
+from .adapters import AdapterResult, get_adapter
 from .logging_conf import configure_logging
-from .models import Profile
+from .models import Profile, TransponderScanEntry
 
 log = logging.getLogger(__name__)
 
@@ -109,10 +109,14 @@ def ingest(
             outcome = _fetch_source(source, workspace, bundle.allow_hosts)
             adapter_name = str(source.get("adapter", "enigma2"))
             adapter = get_adapter(adapter_name)
-            profiles = adapter.ingest(outcome.raw_path, source)
+            adapter_result = adapter.ingest_bundle(outcome.raw_path, source)
+            profiles = adapter_result.profiles
+            scan_entries = adapter_result.scan_entries or []
             if not profiles:
                 log.warning("adapter %s returned no profiles for %s", adapter.name, source_id)
             provenance_record = dict(outcome.provenance)
+            if adapter_result.extra_metadata:
+                provenance_record.setdefault("adapter_metadata", {}).update(adapter_result.extra_metadata)
             profile_ids: List[str] = []
             for profile in profiles:
                 profile_id = profile.metadata.get("profile_id") or adapter.default_profile_id(outcome.raw_path)
@@ -125,6 +129,16 @@ def ingest(
                 profile_path = out_dir / source_id / profile_id / "enigma2"
                 profile_path.parent.mkdir(parents=True, exist_ok=True)
                 io_enigma.write_profile(profile, profile_path)
+                scan_paths_for_profile: List[str] = []
+                if scan_entries:
+                    scan_path = _write_scan_entries(
+                        profile_path.parent,
+                        source_id=source_id,
+                        entries=scan_entries,
+                        filename=f"{profile_id}.json",
+                    )
+                    if scan_path:
+                        scan_paths_for_profile.append(str(scan_path))
                 buildinfo = _build_buildinfo(
                     source_id=source_id,
                     profile_id=profile_id,
@@ -132,6 +146,7 @@ def ingest(
                     raw_path=outcome.raw_path,
                     profile=profile,
                     provenance=provenance_record,
+                    scan_paths=scan_paths_for_profile,
                 )
                 buildinfo_path = profile_path.parent / "BUILDINFO.json"
                 buildinfo_path.write_text(json.dumps(buildinfo, indent=2, sort_keys=True), encoding="utf-8")
@@ -146,6 +161,17 @@ def ingest(
                         metadata=buildinfo,
                     )
                 )
+            if scan_entries:
+                _append_global_scan(out_dir, source_id, scan_entries)
+            if not profiles and scan_entries:
+                scan_path = _write_scan_entries(
+                    workspace.root,
+                    source_id=source_id,
+                    entries=scan_entries,
+                    filename=f"{source_id}.json",
+                )
+                if scan_path:
+                    provenance_record.setdefault("scanfiles", []).append(str(scan_path))
             provenance_record["profiles"] = profile_ids
             _write_json_atomic(workspace.provenance_path, provenance_record)
             _finalise_workspace(workspace, "completed", {"profiles": len(profiles)})
@@ -505,6 +531,65 @@ def _ensure_allowed_host(url: str, allow_hosts: set[str]) -> None:
         raise IngestError(f"redirected url host {hostname} not in allowlist")
 
 
+def _write_scan_entries(
+    base_dir: Path,
+    *,
+    source_id: str,
+    entries: List[TransponderScanEntry],
+    filename: Optional[str] = None,
+) -> Optional[Path]:
+    if not entries:
+        return None
+    safe_name = filename or f"{source_id}.json"
+    safe_name = safe_name.replace("/", "_")
+    scan_dir = Path(base_dir) / "scan"
+    scan_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "source_id": source_id,
+        "generated_at": _iso_now(),
+        "entries": [_scan_entry_to_dict(entry) for entry in entries],
+    }
+    path = scan_dir / safe_name
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    return path
+
+
+def _append_global_scan(out_dir: Path, source_id: str, entries: List[TransponderScanEntry]) -> None:
+    if not entries:
+        return
+    target_dir = Path(out_dir) / "scan"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    path = target_dir / f"{source_id}.json"
+    payload = {
+        "source_id": source_id,
+        "generated_at": _iso_now(),
+        "entries": [_scan_entry_to_dict(entry) for entry in entries],
+    }
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _scan_entry_to_dict(entry: TransponderScanEntry) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {
+        "delivery_system": entry.delivery_system,
+        "system": entry.system,
+        "frequency_hz": entry.frequency_hz,
+        "symbol_rate": entry.symbol_rate,
+        "bandwidth_hz": entry.bandwidth_hz,
+        "modulation": entry.modulation,
+        "fec": entry.fec,
+        "polarization": entry.polarization,
+        "plp_id": entry.plp_id,
+        "country": entry.country,
+        "provider": entry.provider,
+        "region": entry.region,
+        "last_seen": entry.last_seen,
+        "source_provenance": entry.source_provenance,
+    }
+    if entry.extras:
+        payload["extras"] = dict(entry.extras)
+    return payload
+
+
 def _build_buildinfo(
     *,
     source_id: str,
@@ -513,6 +598,7 @@ def _build_buildinfo(
     raw_path: Path,
     profile: Profile,
     provenance: Dict[str, Any],
+    scan_paths: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     buildinfo: Dict[str, Any] = {
         "source_id": source_id,
@@ -525,6 +611,8 @@ def _build_buildinfo(
         "bouquet_count": len(profile.bouquets),
         "provenance": provenance,
     }
+    if scan_paths:
+        buildinfo["scanfiles"] = scan_paths
     buildinfo.update({k: v for k, v in profile.metadata.items() if isinstance(k, str)})
     return buildinfo
 

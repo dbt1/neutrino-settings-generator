@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Set
 
 DeliverySystem = str  # "sat", "cable", "terrestrial"
+ScanDeliverySystem = str  # "DVB-S", "DVB-C", "DVB-T2", ...
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,35 @@ class Transponder:
     transport_stream_id: int
     namespace: int
     extra: Dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class TransponderScanEntry:
+    """
+    Normalised representation of a scanfile entry for Neutrino.
+
+    Deutsch:
+        Normalisierte Scanfile-Struktur, passend für Neutrino.
+
+    Fields are intentionally verbose to cover the heterogeneous metadata emitted by
+    satellite, cable and terrestrial providers.
+    """
+
+    delivery_system: ScanDeliverySystem
+    system: Optional[str]
+    frequency_hz: int
+    symbol_rate: Optional[int] = None
+    bandwidth_hz: Optional[int] = None
+    modulation: Optional[str] = None
+    fec: Optional[str] = None
+    polarization: Optional[str] = None
+    plp_id: Optional[int] = None
+    country: Optional[str] = None
+    provider: Optional[str] = None
+    region: Optional[str] = None
+    last_seen: Optional[str] = None
+    source_provenance: Optional[str] = None
+    extras: Dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -140,3 +170,9 @@ class ConversionOptions:
     min_services_terrestrial: int = 20
     include_stale: bool = False
     stale_after_days: int = 120
+    emit_scanfiles: bool = True
+    scanfile_providers: Optional[Set[str]] = None
+    scanfile_regions: Optional[Set[str]] = None
+    strict_scanfiles: bool = False
+    min_scanfile_entries_cable: int = 10
+    min_scanfile_entries_terrestrial: int = 3

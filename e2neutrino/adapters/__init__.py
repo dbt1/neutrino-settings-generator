@@ -7,11 +7,19 @@ Deutsch:
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from importlib import import_module
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from ..models import Profile
+from ..models import Profile, TransponderScanEntry
+
+
+@dataclass
+class AdapterResult:
+    profiles: List[Profile]
+    scan_entries: List[TransponderScanEntry] = field(default_factory=list)
+    extra_metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 class BaseAdapter:
@@ -29,6 +37,10 @@ class BaseAdapter:
 
     def default_profile_id(self, source_path: Path) -> str:
         return Path(source_path).name
+
+    def ingest_bundle(self, source_path: Path, config: Dict[str, object]) -> AdapterResult:
+        profiles = self.ingest(source_path, config)
+        return AdapterResult(profiles=profiles)
 
 
 _REGISTRY: Dict[str, BaseAdapter] = {}
@@ -59,5 +71,16 @@ def list_adapters() -> List[str]:
 def _bootstrap() -> None:
     # Import modules to trigger registration side effects.
     package = __name__
-    for module in ("enigma2", "neutrino", "dvbsi", "m3u", "jsonapi"):
+    for module in (
+        "enigma2",
+        "neutrino",
+        "dvbsi",
+        "m3u",
+        "jsonapi",
+        "provider_astra",
+        "provider_ard",
+        "provider_dvb_t2_de",
+        "provider_simplitv_at",
+        "provider_vodafone_de",
+    ):
         import_module(f"{package}.{module}")

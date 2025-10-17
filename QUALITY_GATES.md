@@ -12,6 +12,12 @@ This document explains the hard validation rules enforced by the `e2neutrino` pi
 - **Strict mode:** `--strict` upgrades warnings to fatal errors and guarantees that `qa_report.md` is only emitted for
   successful profiles.
 
+
+### Scanfiles
+
+- Cable scanfiles require an official frequency table with MHz/Symbolrate/Modulation provided by the respective operator.
+- `provider_vodafone_de` stays blocked until Vodafone publishes an official DVB-C frequency raster. CI fails with a clear message when the adapter is requested.
+- Fixtures for parser validation must use official sources (e.g. wilhelm.tel) and must not be branded as Vodafone outputs.
 ### Duplicate handling
 
 - Services are identified by SHA-1 of `(onid, tsid, sid, namespace, service_type)` and deduplicated automatically.

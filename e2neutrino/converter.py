@@ -20,7 +20,14 @@ import yaml
 
 from . import io_enigma, io_neutrino, validate
 from .logging_conf import configure_logging
-from .models import Bouquet, BouquetEntry, ConversionOptions, Profile, Service
+from .models import Bouquet, BouquetEntry, ConversionOptions, Profile, Service, TransponderScanEntry
+from .scan import (
+    ScanfileError,
+    ScanfileNormalizationResult,
+    ScanfileWriteReport,
+    normalize_scan_entries,
+    write_scanfiles,
+)
 
 log = logging.getLogger(__name__)
 
@@ -130,6 +137,36 @@ def convert(input_path: Path, output_path: Path, options: ConversionOptions) -> 
     log.info("writing Neutrino settings to %s", output_path)
     io_neutrino.write_outputs(profile, output_path, options, name_map)
 
+    scan_report = None
+    if options.emit_scanfiles:
+        scan_entries = _load_scan_entries(input_path)
+        scan_result = normalize_scan_entries(
+            scan_entries,
+            providers=options.scanfile_providers,
+            regions=options.scanfile_regions,
+        )
+        if scan_result.warnings:
+            warnings.extend(f"scanfiles: {message}" for message in scan_result.warnings)
+            for message in scan_result.warnings:
+                log.warning("scanfiles: %s", message)
+        try:
+            scan_report = write_scanfiles(scan_result.bundle, output_path, options)
+        except ScanfileError as exc:
+            log.error("failed to generate scanfiles: %s", exc)
+            if options.strict_scanfiles:
+                raise ConversionError(str(exc)) from exc
+            warnings.append(f"scanfiles: {exc}")
+            scan_report = None
+        else:
+            log.info(
+                "wrote scanfiles -> cable:%d / terrestrial:%d",
+                sum(scan_result.bundle.counts().get("cable", {}).values()),
+                sum(scan_result.bundle.counts().get("terrestrial", {}).values()),
+            )
+        _record_scan_metadata(profile, scan_result, scan_report)
+    else:
+        profile.metadata["scanfiles"] = json.dumps({"enabled": False})
+
     validate.assert_output_schema(output_path, report.stats)
     _write_qa_report(output_path, profile, report, dedup_records, thresholds)
 
@@ -160,6 +197,234 @@ def _load_name_map(path: Path) -> Dict[str, Dict[str, str]]:
     return result
 
 
+def _load_scan_entries(input_path: Path) -> List[TransponderScanEntry]:
+    base_path = Path(input_path)
+    candidates: set[Path] = set()
+    for ancestor in (base_path,) + tuple(base_path.parents):
+        candidates.add(Path(ancestor) / "scan")
+        candidates.add(Path(ancestor) / "scanfiles")
+    entries: List[TransponderScanEntry] = []
+    seen_paths: Set[Path] = set()
+    for directory in candidates:
+        if not directory.exists() or not directory.is_dir():
+            continue
+        for json_path in sorted(directory.glob("*.json")):
+            if json_path in seen_paths:
+                continue
+            seen_paths.add(json_path)
+            entries.extend(_parse_scan_json(json_path))
+    return entries
+
+
+def _parse_scan_json(path: Path) -> List[TransponderScanEntry]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # pragma: no cover - defensive
+        log.error("failed to parse scan JSON %s: %s", path, exc)
+        return []
+
+    if isinstance(payload, dict):
+        entries_raw = payload.get("entries") or payload.get("transponders") or payload.get("data")
+        if isinstance(entries_raw, list):
+            payload_list = entries_raw
+        else:
+            payload_list = []
+    elif isinstance(payload, list):
+        payload_list = payload
+    else:
+        log.warning("scanfile json %s has unsupported structure", path)
+        return []
+
+    entries: List[TransponderScanEntry] = []
+    for index, item in enumerate(payload_list):
+        entry = _coerce_scan_entry(path, index, item)
+        if entry:
+            entries.append(entry)
+    return entries
+
+
+def _coerce_scan_entry(path: Path, index: int, item: object) -> Optional[TransponderScanEntry]:
+    if not isinstance(item, dict):
+        log.warning("scan entry #%d in %s is not a mapping", index, path)
+        return None
+
+    frequency_hz = _coerce_frequency(item)
+    if frequency_hz is None or frequency_hz <= 0:
+        log.warning("scan entry #%d in %s missing frequency", index, path)
+        return None
+
+    delivery = str(item.get("delivery_system") or item.get("delivery") or "UNKNOWN")
+    system = item.get("system")
+
+    symbol_rate = _coerce_int(item.get("symbol_rate"))
+    bandwidth_hz = _coerce_bandwidth(item)
+    modulation = _coerce_text(item.get("modulation"))
+    fec = _coerce_text(item.get("fec") or item.get("fec_inner"))
+    polarization = _coerce_text(item.get("polarization"))
+    plp_id = _coerce_int(item.get("plp_id"))
+    country = _coerce_text(item.get("country"))
+    provider = _coerce_text(item.get("provider"))
+    region = _coerce_text(item.get("region"))
+    last_seen = _coerce_text(item.get("last_seen"))
+    provenance = _coerce_text(item.get("source_provenance") or item.get("provenance"))
+
+    known_keys = {
+        "delivery_system",
+        "delivery",
+        "system",
+        "frequency_hz",
+        "frequency",
+        "frequency_khz",
+        "frequency_mhz",
+        "symbol_rate",
+        "bandwidth",
+        "bandwidth_hz",
+        "modulation",
+        "fec",
+        "fec_inner",
+        "polarization",
+        "plp_id",
+        "country",
+        "provider",
+        "region",
+        "last_seen",
+        "source_provenance",
+        "provenance",
+        "extras",
+    }
+
+    extras = {}
+    raw_extras = item.get("extras")
+    if isinstance(raw_extras, dict):
+        extras.update({str(k): str(v) for k, v in raw_extras.items() if v is not None})
+    for key, value in item.items():
+        if key in known_keys:
+            continue
+        if value is None:
+            continue
+        extras[str(key)] = str(value)
+
+    return TransponderScanEntry(
+        delivery_system=delivery,
+        system=_coerce_text(system),
+        frequency_hz=frequency_hz,
+        symbol_rate=symbol_rate,
+        bandwidth_hz=bandwidth_hz,
+        modulation=modulation,
+        fec=fec,
+        polarization=polarization,
+        plp_id=plp_id,
+        country=country,
+        provider=provider,
+        region=region,
+        last_seen=last_seen,
+        source_provenance=provenance,
+        extras=extras,
+    )
+
+
+def _coerce_frequency(item: Dict[str, object]) -> Optional[int]:
+    for key in ("frequency_hz", "frequencyHz"):
+        value = item.get(key)
+        if value is not None:
+            return _coerce_int(value)
+    value = item.get("frequency_khz") or item.get("frequencyKHz")
+    if value is not None:
+        khz = _coerce_float(value)
+        if khz is not None:
+            return int(khz * 1_000)
+    value = item.get("frequency_mhz") or item.get("frequencyMHz")
+    if value is not None:
+        mhz = _coerce_float(value)
+        if mhz is not None:
+            return int(mhz * 1_000_000)
+    value = item.get("frequency")
+    if value is not None:
+        freq = _coerce_float(value)
+        if freq is not None:
+            if freq >= 1_000_000:
+                return int(freq)
+            if freq >= 1_000:
+                return int(freq * 1_000)
+            return int(freq * 1_000_000)
+    return None
+
+
+def _coerce_bandwidth(item: Dict[str, object]) -> Optional[int]:
+    value = item.get("bandwidth_hz") or item.get("bandwidthHz")
+    if value is not None:
+        return _coerce_int(value)
+    value = item.get("bandwidth")
+    if value is None:
+        return None
+    text = str(value).strip()
+    if text.endswith("MHz"):
+        base = _coerce_float(text[:-3])
+        if base is not None:
+            return int(base * 1_000_000)
+    if text.endswith("kHz"):
+        base = _coerce_float(text[:-3])
+        if base is not None:
+            return int(base * 1_000)
+    numeric = _coerce_float(text)
+    if numeric is None:
+        return None
+    if numeric > 10_000:
+        return int(numeric)
+    if numeric > 100:
+        return int(numeric * 1_000)
+    return int(numeric * 1_000_000)
+
+
+def _coerce_int(value: object) -> Optional[int]:
+    if value is None:
+        return None
+    try:
+        return int(float(str(value)))
+    except (TypeError, ValueError):
+        return None
+
+
+def _coerce_float(value: object) -> Optional[float]:
+    if value is None:
+        return None
+    try:
+        return float(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def _coerce_text(value: object) -> Optional[str]:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _record_scan_metadata(
+    profile: Profile,
+    normalization: Optional[ScanfileNormalizationResult],
+    report: Optional[ScanfileWriteReport],
+) -> None:
+    metadata: Dict[str, Any] = {}
+    if normalization:
+        metadata["counts"] = normalization.bundle.counts()
+        metadata["warnings"] = normalization.warnings
+        metadata["deduplicated"] = [
+            {
+                "identity": item.identity,
+                "reason": item.reason,
+            }
+            for item in normalization.deduplicated
+        ]
+    if report:
+        metadata["outputs"] = {name: str(path) for name, path in report.output_paths.items()}
+        metadata["cable_counts"] = report.cable_counts
+        metadata["terrestrial_counts"] = report.terrestrial_counts
+        metadata["writer_warnings"] = report.warnings
+    profile.metadata["scanfiles"] = json.dumps(metadata, sort_keys=True)
+
+
 def run_convert(
     *,
     inp: Union[str, Path],
@@ -182,6 +447,12 @@ def run_convert(
     min_services_terrestrial: int = 20,
     include_stale: bool = False,
     stale_after_days: int = 120,
+    emit_scanfiles: bool = True,
+    providers: Optional[Union[Iterable[str], str]] = None,
+    regions: Optional[Union[Iterable[str], str]] = None,
+    strict_scanfiles: bool = False,
+    min_scanfile_entries_cable: int = 10,
+    min_scanfile_entries_terrestrial: int = 3,
 ) -> ConversionResult:
     """
     Convenience wrapper used by the CLI to orchestrate conversions.
@@ -206,6 +477,12 @@ def run_convert(
         min_services_terrestrial=min_services_terrestrial,
         include_stale=include_stale,
         stale_after_days=stale_after_days,
+        emit_scanfiles=emit_scanfiles,
+        scanfile_providers=_normalise_iterable(providers),
+        scanfile_regions=_normalise_iterable(regions),
+        strict_scanfiles=strict_scanfiles,
+        min_scanfile_entries_cable=min_scanfile_entries_cable,
+        min_scanfile_entries_terrestrial=min_scanfile_entries_terrestrial,
     )
     return convert(Path(inp), Path(out), options)
 

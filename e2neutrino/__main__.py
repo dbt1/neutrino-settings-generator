@@ -72,6 +72,42 @@ def cli(ctx: click.Context, verbose: bool) -> None:
 )
 @click.option("--include-stale", is_flag=True, default=False, help="Allow converting stale sources without aborting.")
 @click.option("--stale-after-days", default=120, show_default=True, type=int, help="Staleness threshold in days.")
+@click.option(
+    "--emit-scanfiles/--no-emit-scanfiles",
+    default=True,
+    show_default=True,
+    help="Enable generation of cable.xml and terrestrial.xml scanfiles.",
+)
+@click.option(
+    "--providers",
+    default=None,
+    help="Comma separated list of cable providers to include in scanfiles.",
+)
+@click.option(
+    "--regions",
+    default=None,
+    help="Comma separated list of terrestrial regions to include in scanfiles.",
+)
+@click.option(
+    "--strict-scanfiles",
+    is_flag=True,
+    default=False,
+    help="Fail conversion when scanfile thresholds are not satisfied.",
+)
+@click.option(
+    "--min-scanfile-entries-cable",
+    default=10,
+    show_default=True,
+    type=int,
+    help="Minimum cable transponders per provider (only enforced with --strict-scanfiles).",
+)
+@click.option(
+    "--min-scanfile-entries-terrestrial",
+    default=3,
+    show_default=True,
+    type=int,
+    help="Minimum terrestrial multiplexes per region (only enforced with --strict-scanfiles).",
+)
 def cli_convert(**kwargs: Any) -> None:
     """Convert Enigma2-like folders into Neutrino XML outputs."""
 
@@ -113,6 +149,8 @@ def _transform_convert_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
     mutated["include_types"] = _normalise(mutated.get("include_types"))
     mutated["satellites"] = _normalise(mutated.get("satellites"))
     mutated["combinations"] = _normalise(mutated.get("combinations"))
+    mutated["providers"] = _normalise(mutated.get("providers"))
+    mutated["regions"] = _normalise(mutated.get("regions"))
     return mutated
 
 
