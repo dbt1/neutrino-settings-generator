@@ -38,16 +38,23 @@ def build_readme(
 
     download_caption = {"en": "## Downloads\n", "de": "## Downloads\n"}[locale]
 
-    link_lines = []
-    for bundle in bundles:
-        label = bundle["label"]
-        rel_path = bundle["path"]
-        contents = bundle["contents"]
-        link_text = {
-            "en": f"- [{label}]({rel_path}) – contains {contents}",
-            "de": f"- [{label}]({rel_path}) – enthält {contents}",
+    if bundles:
+        table_header = {
+            "en": "| Package | Contains |\n| --- | --- |\n",
+            "de": "| Paket | Enthält |\n| --- | --- |\n",
         }[locale]
-        link_lines.append(link_text)
+        download_lines = [table_header]
+        for bundle in bundles:
+            link = f"[{bundle['label']}]({bundle['path']})"
+            contents = bundle["contents"]
+            download_lines.append(f"| {link} | {contents} |\n")
+    else:
+        download_lines = [
+            {
+                "en": "_No bundles available._\n",
+                "de": "_Keine Downloads verfügbar._\n",
+            }[locale]
+        ]
 
     instructions_caption = {
         "en": "## How To Use\n",
@@ -88,12 +95,12 @@ def build_readme(
         base = key.replace("-", "/").title()
         return labels.get(key, {}).get(locale, base)
 
-    generated_lines = []
+    entries_by_category: dict[str, list[tuple[str, str, str, str]]] = {}
     if generated_root.exists():
         for category_dir in sorted(generated_root.iterdir()):
             if not category_dir.is_dir():
                 continue
-            profiles_found = []
+            category = category_dir.name
             for source_dir in sorted(category_dir.iterdir()):
                 if not source_dir.is_dir():
                     continue
@@ -103,16 +110,28 @@ def build_readme(
                     for profile_dir in sorted(provider_dir.iterdir()):
                         if not profile_dir.is_dir():
                             continue
-                        rel = profile_dir.relative_to(generated_root)
-                        profiles_found.append(rel.as_posix())
-            if not profiles_found:
-                continue
-            generated_lines.append(f"### {category_heading(category_dir.name)}")
-            for rel_path in profiles_found:
-                generated_lines.append(f"- `{rel_path}`")
-            generated_lines.append("")
-    if not generated_lines:
-        fallback = {"en": "No generated profiles available.", "de": "Keine generierten Profile verfügbar."}[locale]
+                        rel = profile_dir.relative_to(generated_root).as_posix()
+                        entries_by_category.setdefault(category, []).append(
+                            (source_dir.name, provider_dir.name, profile_dir.name, rel)
+                        )
+
+    generated_lines: list[str] = []
+    if entries_by_category:
+        for category in sorted(entries_by_category):
+            generated_lines.append(f"### {category_heading(category)}\n")
+            table_header = {
+                "en": "| Source | Provider | Profile |\n| --- | --- | --- |\n",
+                "de": "| Quelle | Anbieter | Profil |\n| --- | --- | --- |\n",
+            }[locale]
+            generated_lines.append(table_header)
+            for source, provider, _profile, rel in sorted(entries_by_category[category]):
+                generated_lines.append(f"| `{source}` | `{provider}` | `{rel}` |\n")
+            generated_lines.append("\n")
+    else:
+        fallback = {
+            "en": "No generated profiles available.\n",
+            "de": "Keine generierten Profile verfügbar.\n",
+        }[locale]
         generated_lines.append(fallback)
 
     footer = {
@@ -133,9 +152,9 @@ def build_readme(
         header,
         intro,
         download_caption,
-        *(line + "\n" for line in link_lines),
+        *download_lines,
         generated_caption,
-        *(line + "\n" for line in generated_lines),
+        *generated_lines,
         instructions_caption,
         instructions_body,
         footer,
