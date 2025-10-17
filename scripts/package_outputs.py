@@ -62,6 +62,10 @@ def main() -> int:
         specs_by_profile.setdefault((spec.source_id, spec.profile_id), []).append(spec)
 
     dest_dir.mkdir(parents=True, exist_ok=True)
+    generated_root = dest_dir / "generated"
+    if generated_root.exists():
+        shutil.rmtree(generated_root)
+    generated_root.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc)
     release_date = now.strftime("%Y-%m-%d")
     release_root = dest_dir / "releases" / release_date
@@ -84,7 +88,9 @@ def main() -> int:
                 print(f"skip {label}: no ALL output", file=sys.stderr)
                 continue
 
-            target_dir = dest_dir / "generated" / source_dir.name / profile_dir.name
+            category = classify_profile(all_dir)
+            publish_path, provider_slug = build_publish_path(category, source_dir.name, profile_dir.name)
+            target_dir = dest_dir / "generated" / publish_path
             if target_dir.exists():
                 shutil.rmtree(target_dir)
             target_dir.parent.mkdir(parents=True, exist_ok=True)
@@ -101,14 +107,20 @@ def main() -> int:
                     digest = sha256_file(archive_path)
                     package_archives.append(archive_path)
                     checksums.append((archive_path.name, digest))
-                    package_metadata.append(
-                        build_spec_metadata(
-                            spec,
-                            archive_path,
-                            digest,
-                            included_files,
-                        )
+                    metadata_entry = build_spec_metadata(
+                        spec,
+                        archive_path,
+                        digest,
+                        included_files,
                     )
+                    metadata_entry.update(
+                        {
+                            "category": category,
+                            "provider": provider_slug,
+                            "publish_path": publish_path.as_posix(),
+                        }
+                    )
+                    package_metadata.append(metadata_entry)
                     seen_spec_ids.add(spec.package_id)
             else:
                 archive_path, included_files = create_default_archive(
@@ -120,15 +132,21 @@ def main() -> int:
                 digest = sha256_file(archive_path)
                 package_archives.append(archive_path)
                 checksums.append((archive_path.name, digest))
-                package_metadata.append(
-                    build_default_metadata(
-                        source_dir.name,
-                        profile_dir.name,
-                        archive_path,
-                        digest,
-                        included_files,
-                    )
+                metadata_entry = build_default_metadata(
+                    source_dir.name,
+                    profile_dir.name,
+                    archive_path,
+                    digest,
+                    included_files,
                 )
+                metadata_entry.update(
+                    {
+                        "category": category,
+                        "provider": provider_slug,
+                        "publish_path": publish_path.as_posix(),
+                    }
+                )
+                package_metadata.append(metadata_entry)
 
     unused_specs = [spec for spec in specs if spec.package_id not in seen_spec_ids]
     for spec in unused_specs:
@@ -251,6 +269,49 @@ def load_package_specs(path: Path) -> list[PackageSpec]:
             )
         )
     return specs
+
+
+def classify_profile(all_dir: Path) -> str:
+    buildinfo_path = all_dir / "BUILDINFO.json"
+    if not buildinfo_path.exists():
+        return "unknown"
+    try:
+        metadata = json.loads(buildinfo_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:  # pragma: no cover - defensive
+        return "unknown"
+
+    stats_raw = metadata.get("stats")
+    if isinstance(stats_raw, str):
+        try:
+            stats = json.loads(stats_raw)
+        except json.JSONDecodeError:
+            stats = {}
+    elif isinstance(stats_raw, dict):
+        stats = stats_raw
+    else:
+        stats = {}
+
+    sat = int(stats.get("sat_services", 0))
+    cable = int(stats.get("cable_services", 0))
+    terrestrial = int(stats.get("terrestrial_services", 0))
+
+    categories = {
+        "sat": sat,
+        "cable": cable,
+        "terrestrial": terrestrial,
+    }
+    active = [name for name, count in categories.items() if count > 0]
+    if not active:
+        return "unknown"
+    if len(active) == 1:
+        return active[0]
+    return "-".join(sorted(active))
+
+
+def build_publish_path(category: str, source_id: str, profile_id: str) -> tuple[Path, str]:
+    provider_slug = profile_id.split(".", 1)[0] if profile_id else "unknown"
+    safe_category = category or "unknown"
+    return Path(safe_category) / source_id / provider_slug / profile_id, provider_slug
 
 
 def create_spec_archive(spec: PackageSpec, source_dir: Path, release_root: Path) -> tuple[Path, list[str]]:

@@ -76,16 +76,44 @@ def build_readme(
         "de": "## Generierte Profile\n",
     }[locale]
 
+    def category_heading(key: str) -> str:
+        labels = {
+            "sat": {"en": "Satellite profiles", "de": "Satellit-Profile"},
+            "cable": {"en": "Cable profiles", "de": "Kabel-Profile"},
+            "terrestrial": {"en": "Terrestrial profiles", "de": "Terrestrik-Profile"},
+            "sat-cable": {"en": "Satellite + cable mixes", "de": "Satellit/Kabel-Mixe"},
+            "sat-terrestrial": {"en": "Satellite + terrestrial mixes", "de": "Satellit/Terrestrik-Mixe"},
+            "cable-terrestrial": {"en": "Cable + terrestrial mixes", "de": "Kabel/Terrestrik-Mixe"},
+        }
+        base = key.replace("-", "/").title()
+        return labels.get(key, {}).get(locale, base)
+
     generated_lines = []
     if generated_root.exists():
-        for source_dir in sorted(generated_root.iterdir()):
-            if not source_dir.is_dir():
+        for category_dir in sorted(generated_root.iterdir()):
+            if not category_dir.is_dir():
                 continue
-            for profile_dir in sorted(source_dir.iterdir()):
-                if not profile_dir.is_dir():
+            profiles_found = []
+            for source_dir in sorted(category_dir.iterdir()):
+                if not source_dir.is_dir():
                     continue
-                rel = profile_dir.relative_to(generated_root)
-                generated_lines.append(f"- `{rel.as_posix()}`")
+                for provider_dir in sorted(source_dir.iterdir()):
+                    if not provider_dir.is_dir():
+                        continue
+                    for profile_dir in sorted(provider_dir.iterdir()):
+                        if not profile_dir.is_dir():
+                            continue
+                        rel = profile_dir.relative_to(generated_root)
+                        profiles_found.append(rel.as_posix())
+            if not profiles_found:
+                continue
+            generated_lines.append(f"### {category_heading(category_dir.name)}")
+            for rel_path in profiles_found:
+                generated_lines.append(f"- `{rel_path}`")
+            generated_lines.append("")
+    if not generated_lines:
+        fallback = {"en": "No generated profiles available.", "de": "Keine generierten Profile verfügbar."}[locale]
+        generated_lines.append(fallback)
 
     footer = {
         "en": (
