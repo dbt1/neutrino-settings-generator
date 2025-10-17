@@ -1,4 +1,4 @@
-.PHONY: venv init lint test build convert-sample docker-build docker-run clean
+.PHONY: venv init lint test build convert-sample docker-build docker-run clean smoke qa
 
 VENV ?= .venv
 PYTHON := $(VENV)/bin/python
@@ -27,6 +27,19 @@ build:
 convert-sample:
 	. $(VENV)/bin/activate && e2neutrino convert --input $(SAMPLE_PROFILE) --output $(SAMPLE_OUTPUT) --api-version 4
 	@echo "Sample output written to $(SAMPLE_OUTPUT)"
+
+smoke:
+	. $(VENV)/bin/activate && e2neutrino convert --input $(SAMPLE_PROFILE) --output out/smoke --api-version 4 --strict --abort-on-empty
+
+qa:
+	. $(VENV)/bin/activate && e2neutrino ingest --config examples/sources.official.yml --out work/ingest --cache work/cache
+	find work/ingest -type d -name enigma2 -print > work/profiles.txt
+	. $(VENV)/bin/activate && while read -r profile; do \
+		source_id=$$(basename $$(dirname $$(dirname "$$profile"))); \
+		profile_id=$$(basename $$(dirname "$$profile")); \
+		out_dir="out/$${source_id}/$${profile_id}/ALL"; \
+		e2neutrino convert --input "$$profile" --output "$$out_dir" --api-version 4 --strict --abort-on-empty; \
+	done < work/profiles.txt
 
 docker-build:
 	docker build -t e2neutrino:latest .

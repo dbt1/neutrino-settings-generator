@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Official JSON API item",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sid": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0x)?[0-9a-fA-F]+$",
+          "minLength": 1
+        }
+      ]
+    },
+    "onid": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0x)?[0-9a-fA-F]+$",
+          "minLength": 1
+        }
+      ]
+    },
+    "tsid": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0x)?[0-9a-fA-F]+$",
+          "minLength": 1
+        }
+      ]
+    },
+    "namespace": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0x)?[0-9a-fA-F]+$",
+          "minLength": 1
+        }
+      ]
+    },
+    "service_type": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "string",
+          "pattern": "^(0x)?[0-9a-fA-F]+$",
+          "minLength": 1
+        }
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "sid",
+    "onid",
+    "tsid",
+    "namespace",
+    "service_type"
+  ],
+  "additionalProperties": true
+}

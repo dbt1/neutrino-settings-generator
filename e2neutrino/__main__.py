@@ -48,6 +48,30 @@ def cli(ctx: click.Context, verbose: bool) -> None:
 @click.option("--no-cable", is_flag=True, default=False, help="Disable generation of cable outputs.")
 @click.option("--no-terrestrial", is_flag=True, default=False, help="Disable generation of terrestrial outputs.")
 @click.option("--fail-on-warn", is_flag=True, default=False, help="Treat validation warnings as fatal.")
+@click.option("--strict", is_flag=True, default=False, help="Enable strict mode (warnings become errors).")
+@click.option(
+    "--abort-on-empty/--allow-empty",
+    default=False,
+    show_default=True,
+    help="Abort when generated outputs fall below minimum service thresholds.",
+)
+@click.option("--min-services-sat", default=50, show_default=True, type=int, help="Minimum SAT services required.")
+@click.option(
+    "--min-services-cable",
+    default=20,
+    show_default=True,
+    type=int,
+    help="Minimum cable services required.",
+)
+@click.option(
+    "--min-services-terrestrial",
+    default=20,
+    show_default=True,
+    type=int,
+    help="Minimum terrestrial services required.",
+)
+@click.option("--include-stale", is_flag=True, default=False, help="Allow converting stale sources without aborting.")
+@click.option("--stale-after-days", default=120, show_default=True, type=int, help="Staleness threshold in days.")
 def cli_convert(**kwargs: Any) -> None:
     """Convert Enigma2-like folders into Neutrino XML outputs."""
 

@@ -1,0 +1,18 @@
+# Official sources configuration for QA runs.
+#
+# Deutsch:
+#     Offizielle Quellen-Konfiguration für QA-Läufe.
+
+allow_hosts:
+  - github.com
+  - raw.githubusercontent.com
+
+sources:
+  - id: oe-alliance
+    name: OE-Alliance Settings
+    type: git
+    url: https://github.com/oe-alliance/oe-alliance-settings
+    adapter: enigma2
+    include:
+      - "settings/*/enigma2"
+    priority: 10

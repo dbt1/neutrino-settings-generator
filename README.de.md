@@ -15,6 +15,8 @@ cd neutrino-settings-generator/converter
 make init          # Erstellt .venv, installiert festgenagelte Toolchain, editable package
 make lint test     # Fast-Fail: ruff → pytest
 make build         # Wheel + sdist via python -m build erzeugen
+make smoke         # Schneller Fixture-Test
+make qa            # Vollständige Pipeline (benötigt offizielle Quellen)
 ```
 
 ### Beispielprofil konvertieren
@@ -64,6 +66,11 @@ e2neutrino convert \
   --input samples/enigma2_profile_example \
   --output build/out \
   --api-version 4 \
+  --strict \
+  --abort-on-empty \
+  --min-services-sat 50 \
+  --min-services-cable 20 \
+  --min-services-terrestrial 20 \
   --include-types S,C,T \
   --name-scheme human \
   --combinations "Astra19.2E+Hotbird13.0E" \
@@ -73,6 +80,8 @@ e2neutrino convert \
 - Erzeugt Neutrino-XML-Strukturen exakt gemäß Golden-Fixtures.
 - Transport-Ausgaben lassen sich via `--no-sat/--no-cable/--no-terrestrial` deaktivieren.
 - Namens-Mappings lädt `--name-map` (JSON/YAML).
+- `--strict` macht Warnungen kritisch; `--abort-on-empty` bricht bei unterschrittenen Mindest-Senderzahlen pro Empfangsweg ab.
+- Mindestwerte über `--min-services-sat`, `--min-services-cable`, `--min-services-terrestrial` (Standard: 50/20/20) justieren.
 
 ### `ingest`
 
@@ -95,6 +104,16 @@ Beide Befehle unterstützen `--verbose` (Root-Option) für detailliertes Logging
 - **Fixture-Abdeckung:** Beinhaltet Beispiel-Lamedb, Bouquets, DVB-SI-Dumps sowie Name-Map-Beispiele.
 - **Quality Gates:** `ruff` (Lint/Format), `pytest` (Unit/Integration). `mypy` ist optional und über die dev-Abhängigkeiten bereits verfügbar.
 - **Reproduzierbarkeit:** Fest definierte Abhängigkeiten (`pyproject.toml`, `requirements.txt`) und ein Multi-Stage-Dockerfile erzeugen konsistente Wheels.
+
+## Qualitätssicherungspipeline
+
+- `make smoke` führt einen schnellen Funktionstest gegen die mitgelieferten Fixtures aus.
+- `make qa` durchläuft Ingest → Konvertierung → Validierung. Pro Profil entstehen `qa_report.md`, aktualisierte `BUILDINFO.json`
+  (mit Provenienz, Zählwerten, Schwellwerten) sowie harte Checks gegen Duplikate und leere Ergebnisse (`--strict`, `--abort-on-empty`).
+- CI und Nightly-Workflows veröffentlichen aggregierte QA-Artefakte (`qa-report`) und schlagen fehl, sobald Mindestanforderungen
+  verfehlt werden.
+- Vor der Freigabe die jeweiligen `qa_report.md` prüfen: Sie enthalten Senderstatistiken, Hinweise auf veraltete Quellen sowie
+  eine Übersicht der entfernten Duplikate.
 
 ## CI/CD-Pipelines
 
@@ -122,6 +141,15 @@ Troubleshooting:
 - Build schlägt fehl → Logs öffnen (`Actions → Run → Job → Step`) und Lint/Test-Fehler lokal via `make lint test` beheben.
 
 Die englische Anleitung befindet sich in `README.en.md`.
+
+## Fehlersuche
+
+- **Warum sind meine Listen leer?** Prüfen, ob (1) die Quelle erreichbar ist (`git`/`http`-Adapter nutzen ETag-Caching und Host-Allowlists),
+  (2) `lamedb` oder `lamedb5` vorhanden und fehlerfrei lesbar sind, (3) Bouquets nach der Deduplizierung noch Einträge besitzen und (4)
+  die Mindestschwellen erfüllt werden. Erneut mit `--verbose` ausführen und die erzeugte `qa_report.md` heranziehen.
+- **Stale-Warnung (`stale: true` in den Metadaten)** → Der Abrufzeitpunkt überschreitet standardmäßig 120 Tage. Quelle aktualisieren oder – nur für
+  Tests – mit `--include-stale` ausführen.
+- **Duplikate gemeldet** → Die Vorschau in `qa_report.md` zeigt, welche Variante behalten wurde. Prioritäten der Quellen ggf. anpassen.
 
 ## Repository-Aufbau
 

@@ -103,6 +103,8 @@ def write_outputs(
 ) -> None:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    if options.api_version not in {3, 4}:
+        raise ValueError("api_version must be either 3 or 4")
     resolver = NameResolver(options.name_scheme, name_map)
 
     selected_services = _filter_services(profile, options)
@@ -251,7 +253,7 @@ def _filter_bouquets(
             filtered.append(Bouquet(name=bouquet.name, entries=entries, category=bouquet.category))
     if not filtered:
         return _generate_auto_bouquets(services)
-    return sorted(filtered, key=lambda b: b.name.lower())
+    return filtered
 
 
 def _service_ref_to_key(service_ref: str) -> str:

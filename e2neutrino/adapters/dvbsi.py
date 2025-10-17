@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -51,13 +52,13 @@ def _parse_dump(path: Path) -> tuple[Dict[str, Service], Dict[str, Transponder]]
     services: Dict[str, Service] = {}
     transponders: Dict[str, Transponder] = {}
     pattern = re.compile(
-        r"#SERVICE\\s+sid=(?P<sid>[0-9a-fA-Fx]+)\\s+onid=(?P<onid>[0-9a-fA-Fx]+)\\s+tsid=(?P<tsid>[0-9a-fA-Fx]+)"
-        r"\\s+namespace=(?P<namespace>[0-9a-fA-Fx]+)\\s+name=\"(?P<name>[^\"]+)\"\\s+type=(?P<type>\\d+)"
-        r"(?:\\s+delivery=(?P<delivery>\\w+))?"
-        r"(?:\\s+frequency=(?P<frequency>\\d+))?"
-        r"(?:\\s+symbol_rate=(?P<symbol_rate>\\d+))?"
-        r"(?:\\s+orbital=(?P<orbital>[0-9.\\-]+))?"
-        r"(?:\\s+provider=\"(?P<provider>[^\"]+)\")?"
+        r"#SERVICE\s+sid=(?P<sid>[0-9a-fA-Fx]+)\s+onid=(?P<onid>[0-9a-fA-Fx]+)\s+tsid=(?P<tsid>[0-9a-fA-Fx]+)"
+        r"\s+namespace=(?P<namespace>[0-9a-fA-Fx]+)\s+name=\"(?P<name>[^\"]+)\"\s+type=(?P<type>\d+)"
+        r"(?:\s+delivery=(?P<delivery>\w+))?"
+        r"(?:\s+frequency=(?P<frequency>\d+))?"
+        r"(?:\s+symbol_rate=(?P<symbol_rate>\d+))?"
+        r"(?:\s+orbital=(?P<orbital>[0-9.\-]+))?"
+        r"(?:\s+provider=\"(?P<provider>[^\"]+)\")?"
     )
     with Path(path).open("r", encoding="utf-8", errors="replace") as fh:
         for line in fh:
@@ -71,6 +72,8 @@ def _parse_dump(path: Path) -> tuple[Dict[str, Service], Dict[str, Transponder]]
             tsid = int(data["tsid"], 16 if "x" in data["tsid"] else 10)
             onid = int(data["onid"], 16 if "x" in data["onid"] else 10)
             sid = int(data["sid"], 16 if "x" in data["sid"] else 10)
+            if onid == 0 or tsid == 0:
+                raise ValueError(f"service {data['name']} missing network or transport id in {path}")
             trans_key = f"{namespace:08x}:{tsid:04x}:{onid:04x}"
             if trans_key not in transponders:
                 transponders[trans_key] = Transponder(
@@ -91,7 +94,7 @@ def _parse_dump(path: Path) -> tuple[Dict[str, Service], Dict[str, Transponder]]
             service_key = f"{trans_key}:{sid:04x}"
             services[service_key] = Service(
                 key=service_key,
-                name=data["name"],
+                name=unicodedata.normalize("NFC", data["name"]),
                 service_type=int(data["type"]),
                 service_id=sid,
                 transponder_key=trans_key,

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 
@@ -24,6 +25,7 @@ def sources_config(tmp_path: Path) -> Path:
     shutil.copy(FIXTURE_DIR / "json_payload.json", json_source / "channels.json")
 
     config = {
+        "require_primary": False,
         "sources": [
             {
                 "id": "local-enigma",
@@ -63,6 +65,10 @@ def test_ingest_sources(tmp_path: Path, sources_config: Path) -> None:
         assert profile_dir.exists()
         assert (profile_dir / "lamedb").exists() or (profile_dir / "lamedb5").exists()
         assert (profile_dir.parent / "BUILDINFO.json").exists()
+        provenance_path = result.output_path / "SOURCE_PROVENANCE.json"
+        assert provenance_path.exists()
+        data = json.loads(provenance_path.read_text(encoding="utf-8"))
+        assert data.get("source_id") == result.source_id
 
     # json adapter should produce Enigma-like folder
     json_profile = out_dir / "jsonapi"

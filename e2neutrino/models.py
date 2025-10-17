@@ -133,3 +133,10 @@ class ConversionOptions:
     include_cable: bool = True
     include_terrestrial: bool = True
     fail_on_warn: bool = False
+    strict: bool = False
+    abort_on_empty: bool = False
+    min_services_sat: int = 50
+    min_services_cable: int = 20
+    min_services_terrestrial: int = 20
+    include_stale: bool = False
+    stale_after_days: int = 120

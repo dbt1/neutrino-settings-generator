@@ -25,67 +25,18 @@ jobs:
           python -m pip install --upgrade pip wheel
           pip install -r requirements.txt
           pip install -e . --no-deps
-
-      - name: Ingest sources
+      - name: QA pipeline
         run: |
-          mkdir -p work/ingest
-          e2neutrino ingest --config examples/sources.example.yml --out work/ingest --cache "${RUNNER_TEMP}/e2n-cache"
+          make qa
 
-      - name: Discover profiles
-        id: find
+      - name: Aggregate QA report
+        if: always()
         run: |
-          python <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          base = Path("work/ingest")
-          profiles = [str(path) for path in base.glob("*/*/enigma2") if path.is_dir()]
-          if not profiles:
-              raise SystemExit("No profiles discovered; verify ingest configuration.")
-          output = Path(os.environ["GITHUB_OUTPUT"])
-          with output.open("a", encoding="utf-8") as fh:
-              fh.write(f"list={json.dumps(profiles)}\n")
-          PY
-        shell: bash
-
-      - name: Convert profiles
-        env:
-          PROFILE_LIST: ${{ steps.find.outputs.list }}
-        run: |
-          set -euo pipefail
-          mkdir -p out
-          python <<'PY'
-          import json
-          import os
-          import shutil
-          from pathlib import Path
-          from subprocess import run
-
-          profiles = json.loads(os.environ["PROFILE_LIST"])
-          for profile in profiles:
-              profile_path = Path(profile)
-              src_id = profile_path.parents[1].name
-              prof_id = profile_path.parent.name
-              out_dir = Path("out") / src_id / prof_id / "ALL"
-              out_dir.parent.mkdir(parents=True, exist_ok=True)
-              args = [
-                  "e2neutrino",
-                  "convert",
-                  "--input",
-                  str(profile_path),
-                  "--output",
-                  str(out_dir),
-                  "--api-version",
-                  "4",
-              ]
-              result = run(args, check=False)
-              if result.returncode != 0:
-                  raise SystemExit(result.returncode)
-              buildinfo = profile_path.parent / "BUILDINFO.json"
-              if buildinfo.exists():
-                  shutil.copy2(buildinfo, out_dir.parent / "BUILDINFO.json")
-          PY
+          if find out -name qa_report.md -print -quit; then
+            find out -name qa_report.md -print0 | xargs -0 cat > qa_report.md
+          else
+            echo "No QA reports generated" > qa_report.md
+          fi
 
       - name: Package outputs
         run: |
@@ -97,6 +48,23 @@ jobs:
           name: settings-bundles
           path: publish/releases/*/*
           if-no-files-found: error
+
+      - name: Upload QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report
+          path: |
+            qa_report.md
+            out/**/BUILDINFO.json
+
+      - name: Create issue on QA fail
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "QA failure: empty or low-quality outputs"
+          content-filepath: qa_report.md
+          labels: bug, QA
 
       - name: Ensure publish token present
         run: |

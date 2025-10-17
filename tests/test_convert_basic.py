@@ -30,6 +30,10 @@ def test_basic_conversion(enigma_profile: Path, tmp_path: Path) -> None:
     bouquets_all = out_dir / "bouquets.xml"
     assert services_all.exists()
     assert bouquets_all.exists()
+    qa_report = out_dir / "qa_report.md"
+    assert qa_report.exists()
+    report_text = qa_report.read_text(encoding="utf-8")
+    assert "QA Report" in report_text
 
     tree = ET.parse(services_all)
     root = tree.getroot()

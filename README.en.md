@@ -15,6 +15,8 @@ cd neutrino-settings-generator/converter
 make init          # creates .venv, installs pinned toolchain, editable package
 make lint test     # fast-fail: ruff → pytest
 make build         # produce wheel + sdist via python -m build
+make smoke         # quick validation against bundled fixtures
+make qa            # full ingest → convert → validate (requires official sources)
 ```
 
 ### Convert a Sample Profile
@@ -64,6 +66,11 @@ e2neutrino convert \
   --input samples/enigma2_profile_example \
   --output build/out \
   --api-version 4 \
+  --strict \
+  --abort-on-empty \
+  --min-services-sat 50 \
+  --min-services-cable 20 \
+  --min-services-terrestrial 20 \
   --include-types S,C,T \
   --name-scheme human \
   --combinations "Astra19.2E+Hotbird13.0E" \
@@ -73,6 +80,8 @@ e2neutrino convert \
 - Generates Neutrino XML structures exactly matching golden fixtures.
 - Toggle dedicated delivery outputs with `--no-sat/--no-cable/--no-terrestrial`.
 - Provide YAML/JSON overrides through `--name-map`.
+- `--strict` upgrades warnings to hard failures; `--abort-on-empty` enforces minimum service thresholds per delivery path.
+- Tune thresholds using `--min-services-sat`, `--min-services-cable`, and `--min-services-terrestrial` (defaults: 50/20/20).
 
 ### `ingest`
 
@@ -95,6 +104,15 @@ Both commands honour `--verbose` on the root group for debug logging.
 - **Fixture coverage:** sample lamedb, bouquets, DVB-SI dumps, and name-map examples ensure wide coverage.
 - **Quality gates:** `ruff` (lint/format), `pytest` (unit/integration). Optional `mypy` can be enabled via `pip install mypy` (already in dev extras).
 - **Reproducibility:** pinned dependencies (`pyproject.toml`, `requirements.txt`) and multi-stage Docker image ensure consistent wheels.
+
+## Quality Assurance Pipeline
+
+- Run `make smoke` for a quick local validation against bundled fixtures.
+- Run `make qa` to execute the full ingestion → conversion → validation chain. It generates
+  per-profile `qa_report.md` files, refreshed `BUILDINFO.json` (with provenance, counts, thresholds), and enforces
+  duplicate- and emptiness-checks via `--strict` and `--abort-on-empty`.
+- CI and nightly workflows publish aggregated QA artefacts (`qa-report` archive) and fail early when thresholds are not met.
+- Inspect `qa_report.md` for each profile to review service counts, stale-source detection, and deduplication summaries before promoting artefacts.
 
 ## CI/CD Pipelines
 
@@ -122,6 +140,16 @@ Troubleshooting tips:
 - Build failures → inspect logs (`Actions → run → job → step`). Fix lint/test failures locally using `make lint test`.
 
 German guidance is mirrored in `README.de.md`.
+
+## Troubleshooting
+
+- **Why are my lists empty?** Verify that (1) the upstream source is reachable (`git`/`http` adapters honour ETag caching and host allowlists),
+  (2) `lamedb` or `lamedb5` files exist and parse without errors, (3) bouquets reference actual services after deduplication, and (4) the
+  minimum thresholds are met. Re-run with `--verbose` to inspect per-stage counts and consult the generated `qa_report.md`.
+- **Stale source warning (`stale: true` in metadata)** → the fetched timestamp exceeded the default 120-day window. Either refresh the upstream
+  data or re-run with `--include-stale` (not recommended for releases).
+- **Duplicate service identities reported** → review the deduplication preview inside `qa_report.md` and adjust source priorities if the incorrect
+  variant was selected.
 
 ## Repository Layout
 

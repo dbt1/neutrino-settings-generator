@@ -21,11 +21,12 @@ Store secrets under `Settings → Secrets and variables → Actions`. Rotate tok
 
 ### Nightly Sync (`Sync and Build` workflow)
 
-1. Cron schedule `0 2 * * *` (02:00 UTC) performs ingest → convert → zip.
-2. Artefacts are uploaded via `actions/upload-artifact`.
-3. Optional publish: extend workflow with a deployment step pushing artefacts into `neutrino-settings`. Use the stored secret and document the destination path (`releases/YYYY-MM-DD/`).
-4. Checksum file (`sha256sum`) is generated per release folder.
-5. Friendly package names and curated subsets are controlled via `metadata/packages.yml`; metadata for every bundle is exported to `packages_manifest.json` for downstream automation.
+1. Cron schedule `0 2 * * *` (02:00 UTC) executes the end-to-end QA pipeline via `make qa` (ingest → convert → validate).
+2. Each conversion emits `qa_report.md`, refreshed `BUILDINFO.json`, and provenance metadata (`SOURCE_PROVENANCE.json`, `source.lock`).
+3. The workflow aggregates all reports into a root-level `qa_report.md`. On failure a GitHub issue is opened automatically (`peter-evans/create-issue-from-file`).
+4. When QA succeeds, artefacts are packaged (`scripts/package_outputs.py`) and uploaded through `actions/upload-artifact`.
+5. Optional publish: add a deployment step that pushes bundles into `neutrino-settings` (target layout `releases/YYYY-MM-DD/`). Use the configured secret.
+6. A `sha256sum` file is produced per release folder; descriptive package names remain configurable in `metadata/packages.yml`.
 
 ### Monitoring & Alerts
 
@@ -37,7 +38,7 @@ Store secrets under `Settings → Secrets and variables → Actions`. Rotate tok
 
 - **Runner minutes:** standard GitHub quota applies; conversions are CPU/light IO bound.
 - **Storage:** artefact retention defaults to 90 days. Clean up manually if required.
-- **Network:** ingestion may hit upstream rate limits; caching via `--cache` reduces impact.
+- **Network:** ingestion honours ETag/Last-Modified caching and a host allowlist (`examples/sources.official.yml`). Per-source workdirs maintain negative-cache TTLs to avoid hammering upstreams.
 
 ### Disaster Recovery
 
@@ -66,11 +67,12 @@ Secrets unter `Settings → Secrets and variables → Actions` speichern und min
 
 ### Nightly Sync (Workflow `Sync and Build`)
 
-1. Cron-Zeitplan `0 2 * * *` (02:00 UTC) führt ingest → convert → zip aus.
-2. Artefakte werden per `actions/upload-artifact` hochgeladen.
-3. Optionale Veröffentlichung: Workflow um einen Deploy-Schritt erweitern, der Artefakte nach `neutrino-settings` pusht. Secret nutzen und Zielpfad (`releases/YYYY-MM-DD/`) dokumentieren.
-4. Für jeden Releasetag wird eine `sha256sum`-Datei erstellt.
-5. Benutzerfreundliche Paketnamen sowie kuratierte Teilpakete werden über `metadata/packages.yml` gesteuert; die zugehörigen Metadaten landen als `packages_manifest.json` bei den ZIP-Artefakten und können von Automatisierungen ausgewertet werden.
+1. Cron-Trigger `0 2 * * *` (02:00 UTC) startet die QA-Pipeline via `make qa` (Ingest → Konvertierung → Validierung).
+2. Jede Konvertierung erzeugt `qa_report.md`, aktualisierte `BUILDINFO.json` sowie Provenienzdateien (`SOURCE_PROVENANCE.json`, `source.lock`).
+3. Alle Reports werden zu einer zentralen `qa_report.md` zusammengeführt; bei Fehlern eröffnet der Workflow automatisch ein GitHub-Issue (`peter-evans/create-issue-from-file`).
+4. Bei erfolgreicher QA werden die Artefakte mit `scripts/package_outputs.py` gebündelt und per `actions/upload-artifact` bereitgestellt.
+5. Optionale Veröffentlichung: Deployment-Schritt ergänzen, der Bundles nach `neutrino-settings` pusht (Zielstruktur `releases/YYYY-MM-DD/`).
+6. Pro Release-Ordner entsteht eine `sha256sum`-Datei; sprechende Paketnamen bleiben über `metadata/packages.yml` konfigurierbar.
 
 ### Monitoring & Alerts
 
@@ -82,7 +84,7 @@ Secrets unter `Settings → Secrets and variables → Actions` speichern und min
 
 - **Runner-Minuten:** Standard-GitHub-Kontingent; Konvertierungen sind CPU-/I/O-light.
 - **Storage:** Artefakte werden 90 Tage vorgehalten. Bei Bedarf manuell bereinigen.
-- **Netzwerk:** Ingest kann Upstream-Limits erreichen; Caching via `--cache` mindert Last.
+- **Netzwerk:** Ingest nutzt ETag/Last-Modified-Caching und eine Host-Allowlist (`examples/sources.official.yml`). Negative-Cache-TTLs verhindern unnötige Wiederholungen bei Fehlern.
 
 ### Disaster Recovery
 

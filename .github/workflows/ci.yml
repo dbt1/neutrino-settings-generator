@@ -28,6 +28,19 @@ jobs:
       - name: Test (pytest)
         run: pytest -q
 
+      - name: QA run
+        run: |
+          make qa || (echo "QA failed" && exit 1)
+
+      - name: Upload QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-report
+          path: |
+            out/**/BUILDINFO.json
+            **/qa_report.md
+
       - name: Type check (mypy)
         run: mypy e2neutrino
         continue-on-error: true

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import logging
 import re
+import unicodedata
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple, Union, cast
 
@@ -36,11 +37,22 @@ def load_profile(base_path: Path) -> Profile:
     bouquets = _parse_bouquets(base_path)
 
     profile = Profile(services=services, transponders=transponders, bouquets=bouquets)
+    _normalise_profile(profile)
     profile.metadata["source"] = str(base_path)
     if lamedb.name == "lamedb5":
         profile.metadata["lamedb_version"] = "5"
     else:
         profile.metadata["lamedb_version"] = "4"
+    profile.metadata["service_count"] = str(len(profile.services))
+    profile.metadata["transponder_count"] = str(len(profile.transponders))
+    profile.metadata["bouquet_count"] = str(len(profile.bouquets))
+    log.info(
+        "parsed enigma2 profile %s -> %d services, %d transponders, %d bouquets",
+        base_path,
+        len(profile.services),
+        len(profile.transponders),
+        len(profile.bouquets),
+    )
     return profile
 
 
@@ -72,7 +84,7 @@ def _pick_lamedb(base_path: Path) -> Path:
 
 def _parse_lamedb(path: Path) -> Tuple[Dict[str, Transponder], Dict[str, Service]]:
     with path.open("r", encoding="utf-8", errors="replace") as fh:
-        lines = [line.rstrip("\n") for line in fh]
+        lines = [line.rstrip("\r\n") for line in fh]
 
     if not lines or not lines[0].startswith("eDVB services"):
         raise ValueError(f"{path} does not look like a lamedb file")
@@ -126,7 +138,7 @@ def _parse_lamedb(path: Path) -> Tuple[Dict[str, Transponder], Dict[str, Service
                     break
                 if nxt in {"/", "end"}:
                     break
-                extra_lines.append(nxt)
+                extra_lines.append(_clean_text(nxt))
                 index += 1
 
             service = _parse_service_entry(svc_id_line, name_line, extra_lines, path)
@@ -215,9 +227,10 @@ def _parse_service_entry(svc_id_line: str, name_line: str, extra_lines: Iterable
     provider = None
     caids: List[int] = []
     extra: Dict[str, Union[str, List[str]]] = {}
+    name_line = _clean_text(name_line)
     for line in extra_lines:
         if line.startswith("p:"):
-            provider = line[2:].split(",", 1)[0]
+            provider = _clean_text(line[2:].split(",", 1)[0])
         elif line.startswith("c:"):
             ca_val = line[2:]
             cas_list = cast(List[str], extra.setdefault("cas", []))
@@ -227,10 +240,10 @@ def _parse_service_entry(svc_id_line: str, name_line: str, extra_lines: Iterable
             except ValueError:
                 pass
         elif line.startswith("f:"):
-            extra["flags"] = line[2:]
+            extra["flags"] = _clean_text(line[2:])
         elif ":" in line and line.split(":", 1)[0].isalpha():
             key, value = line.split(":", 1)
-            extra[key] = value
+            extra[key] = _clean_text(value)
 
     extra_text = {k: ",".join(v) if isinstance(v, list) else v for k, v in extra.items()}
 
@@ -246,7 +259,7 @@ def _parse_service_entry(svc_id_line: str, name_line: str, extra_lines: Iterable
         original_network_id=onid,
         transport_stream_id=tsid,
         namespace=namespace,
-        provider=provider,
+        provider=_clean_text(provider) if provider else None,
         caids=tuple(caids),
         is_radio=is_radio,
         extra=extra_text,
@@ -298,15 +311,39 @@ def _parse_userbouquet(path: Path) -> Bouquet:
         for line in fh:
             line = line.strip()
             if line.startswith("#NAME"):
-                name = line.split(" ", 1)[1].strip()
+                name = _clean_text(line.split(" ", 1)[1])
                 continue
             if line.startswith("#SERVICE"):
                 ref = line.split(" ", 1)[1].strip()
                 entries.append(BouquetEntry(service_ref=ref))
             elif line.startswith("#DESCRIPTION") and entries:
-                entries[-1].name = line.split(" ", 1)[1].strip()
+                entries[-1].name = _clean_text(line.split(" ", 1)[1])
 
     return Bouquet(name=name, entries=entries, category=category, source_path=path)
+
+
+def _normalise_profile(profile: Profile) -> None:
+    for bouquet in profile.bouquets:
+        cleaned_name = _clean_text(bouquet.name)
+        if cleaned_name:
+            bouquet.name = cleaned_name
+        for entry in bouquet.entries:
+            if entry.name is not None:
+                cleaned_entry = _clean_text(entry.name)
+                entry.name = cleaned_entry or None
+
+
+def _is_printable(ch: str) -> bool:
+    return ord(ch) >= 32 or ch in {"\t"}
+
+
+def _clean_text(value: Optional[str]) -> str:
+    if value is None:
+        return ""
+    text = value.replace("\x00", "")
+    text = "".join(ch for ch in text if _is_printable(ch))
+    text = unicodedata.normalize("NFC", text)
+    return text.strip()
 
 
 def _write_lamedb(profile: Profile, path: Path) -> None:

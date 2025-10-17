@@ -27,9 +27,11 @@ def test_golden_output(enigma_profile: Path, tmp_path: Path) -> None:
 
     generated_services = (out_dir / "services.xml").read_text(encoding="utf-8")
     generated_bouquets = (out_dir / "bouquets.xml").read_text(encoding="utf-8")
+    qa_report = (out_dir / "qa_report.md").read_text(encoding="utf-8")
 
     expected_services = (GOLDEN_DIR / "services.xml").read_text(encoding="utf-8")
     expected_bouquets = (GOLDEN_DIR / "bouquets.xml").read_text(encoding="utf-8")
 
     assert generated_services == expected_services
     assert generated_bouquets == expected_bouquets
+    assert "QA Report" in qa_report

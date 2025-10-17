@@ -12,10 +12,16 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, cast
 
+from jsonschema import Draft7Validator
+
 from ..models import Bouquet, BouquetEntry, Profile, Service, Transponder
+from ..schemas import load_schema
 from . import BaseAdapter, register
 
 log = logging.getLogger(__name__)
+
+_JSONAPI_SCHEMA = load_schema("jsonapi.source.schema.json")
+_JSONAPI_VALIDATOR = Draft7Validator(_JSONAPI_SCHEMA)
 
 
 class JSONAPIAdapter(BaseAdapter):
@@ -46,15 +52,26 @@ class JSONAPIAdapter(BaseAdapter):
         bouquets = Bouquet(name="All Channels", entries=[], category="tv")
 
         typed_items = cast(List[Mapping[str, Any]], items)
+        seen_services: set[str] = set()
         for idx, item in enumerate(typed_items, start=1):
             if not isinstance(item, Mapping):
-                continue
-            sid = _safe_int(item.get(sid_field, idx))
-            onid = _safe_int(item.get(onid_field, 0))
-            tsid = _safe_int(item.get(tsid_field, idx))
-            namespace = _safe_int(item.get(namespace_field, idx))
-            name = str(item.get(name_field, f"Channel {idx}"))
-            service_type = _safe_int(item.get(service_type_field, 1))
+                raise ValueError(f"jsonapi item at index {idx} is not an object")
+            canonical = _build_canonical_item(
+                item,
+                name_field,
+                sid_field,
+                onid_field,
+                tsid_field,
+                namespace_field,
+                service_type_field,
+            )
+            _validate_item(canonical, idx)
+            sid = _safe_int(canonical["sid"], idx)
+            onid = _safe_int(canonical["onid"], 0)
+            tsid = _safe_int(canonical["tsid"], idx)
+            namespace = _safe_int(canonical["namespace"], idx)
+            name = str(canonical["name"]).strip()
+            service_type = _safe_int(canonical["service_type"], 1)
             trans_key = f"{namespace:08x}:{tsid:04x}:{onid:04x}"
             if trans_key not in transponders:
                 transponders[trans_key] = Transponder(
@@ -73,6 +90,10 @@ class JSONAPIAdapter(BaseAdapter):
                     extra={"source": "jsonapi"},
                 )
             service_key = f"{trans_key}:{sid:04x}"
+            if service_key in seen_services:
+                log.debug("skipping duplicate jsonapi service %s (%s)", service_key, name)
+                continue
+            seen_services.add(service_key)
             services[service_key] = Service(
                 key=service_key,
                 name=name,
@@ -116,6 +137,36 @@ def _apply_pointer(data: Any, pointer: Optional[str]) -> Any:
         else:
             raise ValueError(f"json pointer segment {part} not resolvable")
     return current
+
+
+def _build_canonical_item(
+    item: Mapping[str, Any],
+    name_field: str,
+    sid_field: str,
+    onid_field: str,
+    tsid_field: str,
+    namespace_field: str,
+    service_type_field: str,
+) -> Dict[str, Any]:
+    canonical: Dict[str, Any] = {
+        "name": item.get(name_field),
+        "sid": item.get(sid_field),
+        "onid": item.get(onid_field),
+        "tsid": item.get(tsid_field),
+        "namespace": item.get(namespace_field),
+        "service_type": item.get(service_type_field),
+    }
+    if isinstance(canonical["name"], str):
+        canonical["name"] = canonical["name"].strip()
+    return canonical
+
+
+def _validate_item(item: Dict[str, Any], index: int) -> None:
+    errors = sorted(_JSONAPI_VALIDATOR.iter_errors(item), key=lambda err: err.path)
+    if errors:
+        first = errors[0]
+        message = first.message
+        raise ValueError(f"jsonapi item {index} invalid: {message}")
 
 
 def _safe_int(value, default: int = 0) -> int:
