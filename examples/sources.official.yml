@@ -13,6 +13,14 @@ sources:
     type: blocked
     adapter: provider_vodafone_de
     note: Vodafone publishes no official DVB-C frequency table with MHz/Symbolrate/Modulation.
+  - id: wilhelm-tel-de
+    name: wilhelm.tel DVB-C (Hamburg)
+    type: file
+    path: ../metadata/scan_sources/wilhelm-tel.de
+    adapter: provider_wilhelm_tel_de
+    provider_name: wilhelm-tel
+    region: de-hamburg
+    country: DE
   - id: oe-alliance
     name: OE-Alliance Settings
     type: git

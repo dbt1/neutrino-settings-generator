@@ -1,0 +1,2161 @@
+{
+  "provider": "wilhelm-tel",
+  "source_url": "https://www.wilhelm-tel.de/fileadmin/user_upload/Documents/Fernsehen/Digitale_Senderliste_mit_Frequenzen.pdf",
+  "retrieved_at": "2025-10-17T14:16:38Z",
+  "stand": "02.09.2025",
+  "transponders": [
+    {
+      "frequency_hz": 306000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Rai 1 HD (WT)",
+          "language": "Mehrsprachig",
+          "lcn": 657,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Rai 2 HD (WT)",
+          "language": "Mehrsprachig",
+          "lcn": 658,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Rai 3 HD (WT)",
+          "language": "Italienisch",
+          "lcn": 659,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Rai News 24 HD (WT)",
+          "language": "Italienisch",
+          "lcn": 660,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 314000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "SYLT1 HD",
+          "language": "Deutsch",
+          "lcn": 206,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "volksmusik.tv",
+          "language": "Deutsch",
+          "lcn": 465,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SHOW MAX HD (WT)",
+          "language": "Türkisch",
+          "lcn": 746,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 322000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "ORF 2 Europe HD",
+          "language": "Deutsch",
+          "lcn": 250,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "AXN White HD (WT)",
+          "language": "Deutsch",
+          "lcn": 276,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "RTK-1 (WT)",
+          "language": "Albanisch",
+          "lcn": 562,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Antenna Europe (WT)",
+          "language": "Griechisch",
+          "lcn": 644,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "tlnovelas (WT)",
+          "language": "Spanisch",
+          "lcn": 733,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TRT Belgesel HD (WT)",
+          "language": "Türkisch",
+          "lcn": 755,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TRT Haber (WT)",
+          "language": "Türkisch",
+          "lcn": 757,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 330000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "BR Fernsehen Nord HD",
+          "language": "Deutsch",
+          "lcn": 144,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "BR Fernsehen Süd HD",
+          "language": "Deutsch",
+          "lcn": 145,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NDR FS HH HD",
+          "language": "Deutsch",
+          "lcn": 150,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NDR FS MV HD",
+          "language": "Deutsch",
+          "lcn": 151,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NDR FS NDS HD",
+          "language": "Deutsch",
+          "lcn": 152,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NDR FS SH HD",
+          "language": "Deutsch",
+          "lcn": 153,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "phoenix HD",
+          "language": "Deutsch",
+          "lcn": 328,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 338000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "QVC UHD",
+          "language": "Deutsch",
+          "lcn": 511,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TNT Russland (WT)",
+          "language": "Russisch",
+          "lcn": 705,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 346000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Shop LC HD",
+          "language": "Mehrsprachig",
+          "lcn": 512,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTP 3 (WT)",
+          "language": "Portugiesisch",
+          "lcn": 684,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "RTP International (WT)",
+          "language": "Portugiesisch",
+          "lcn": 685,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 354000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "RTV21 HD (WT)",
+          "language": "Albanisch",
+          "lcn": 563,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Asharq News Channel HD",
+          "language": "Arabisch",
+          "lcn": 568,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TV Rain HD (WT)",
+          "language": "Russisch",
+          "lcn": 707,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Tele 1 HD (WT)",
+          "language": "Türkisch",
+          "lcn": 754,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 362000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "auto motor und sport channel (WT)",
+          "language": "Deutsch",
+          "lcn": 361,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Stingray CMusic (WT)",
+          "language": "Englisch",
+          "lcn": 621,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TVP Info HD (WT)",
+          "language": "Polnisch",
+          "lcn": 679,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TVP Polonia HD (WT)",
+          "language": "Polnisch",
+          "lcn": 680,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 370000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Das Erste HD",
+          "language": "Deutsch",
+          "lcn": 101,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "arte HD",
+          "language": "Deutsch",
+          "lcn": 112,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SWR BW HD",
+          "language": "Deutsch",
+          "lcn": 159,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SWR RP HD",
+          "language": "Deutsch",
+          "lcn": 160,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 394000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "ZDF SD",
+          "language": "Deutsch",
+          "lcn": 122,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "3sat SD",
+          "language": "Deutsch",
+          "lcn": 131,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "zdf_neo SD",
+          "language": "Deutsch",
+          "lcn": 256,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ZDFinfo SD",
+          "language": "Deutsch",
+          "lcn": 349,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 418000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Sky Krimi",
+          "language": "Deutsch",
+          "lcn": 831,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Warner TV Film",
+          "language": "Mehrsprachig",
+          "lcn": 834,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 4",
+          "language": "Mehrsprachig",
+          "lcn": 859,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 5",
+          "language": "Mehrsprachig",
+          "lcn": 860,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 4",
+          "language": "Mehrsprachig",
+          "lcn": 876,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 5",
+          "language": "Mehrsprachig",
+          "lcn": 877,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Premier League",
+          "language": "Mehrsprachig",
+          "lcn": 900,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 1",
+          "language": "Mehrsprachig",
+          "lcn": 922,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Cinema Action",
+          "language": "Mehrsprachig",
+          "lcn": 934,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Prime Sportsbar",
+          "language": "Deutsch",
+          "lcn": 989,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 426000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Sky One",
+          "language": "Mehrsprachig",
+          "lcn": 821,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 2",
+          "language": "Deutsch",
+          "lcn": 857,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Mix",
+          "language": "Deutsch",
+          "lcn": 868,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 2",
+          "language": "Deutsch",
+          "lcn": 874,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 3",
+          "language": "Deutsch",
+          "lcn": 924,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Cinema Family",
+          "language": "Mehrsprachig",
+          "lcn": 935,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Beate Uhse",
+          "language": "Deutsch",
+          "lcn": 954,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Crime + Investigation",
+          "language": "Mehrsprachig",
+          "lcn": 986,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Romance TV",
+          "language": "Deutsch",
+          "lcn": 995,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 434000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Bibel TV HD",
+          "language": "Deutsch",
+          "lcn": 445,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 442000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "CNBC",
+          "language": "Englisch",
+          "lcn": 608,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Sky Showcase",
+          "language": "Mehrsprachig",
+          "lcn": 820,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Warner TV Comedy",
+          "language": "Mehrsprachig",
+          "lcn": 835,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 9",
+          "language": "Mehrsprachig",
+          "lcn": 864,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 10",
+          "language": "Deutsch",
+          "lcn": 865,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 9",
+          "language": "Mehrsprachig",
+          "lcn": 881,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 10",
+          "language": "Mehrsprachig",
+          "lcn": 882,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 4",
+          "language": "Mehrsprachig",
+          "lcn": 925,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 5",
+          "language": "Mehrsprachig",
+          "lcn": 926,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "DAZN 1",
+          "language": "Deutsch",
+          "lcn": 997,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 450000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Universal TV HD (WT)",
+          "language": "Deutsch",
+          "lcn": 277,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "SRF info HD",
+          "language": "Deutsch",
+          "lcn": 600,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 458000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Warner TV Serie",
+          "language": "Mehrsprachig",
+          "lcn": 825,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Universal TV",
+          "language": "Mehrsprachig",
+          "lcn": 826,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga UHD",
+          "language": "Mehrsprachig",
+          "lcn": 854,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 8",
+          "language": "Mehrsprachig",
+          "lcn": 863,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport UHD",
+          "language": "Deutsch",
+          "lcn": 870,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 8",
+          "language": "Mehrsprachig",
+          "lcn": 880,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 6",
+          "language": "Mehrsprachig",
+          "lcn": 927,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 466000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "T7 HD (WT)",
+          "language": "Albanisch",
+          "lcn": 565,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "BN Music HD (WT)",
+          "language": "Serbisch",
+          "lcn": 588,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "BN TV HD (WT)",
+          "language": "Serbisch",
+          "lcn": 589,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "SIC Internacional (WT)",
+          "language": "Portugiesisch",
+          "lcn": 689,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 474000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "TLC",
+          "language": "Deutsch",
+          "lcn": 257,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Welt der Wunder HD",
+          "language": "Deutsch",
+          "lcn": 348,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "pearl.tv HD Shop",
+          "language": "Deutsch",
+          "lcn": 507,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Al Jazeera HD (arab)",
+          "language": "Arabisch",
+          "lcn": 567,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TV 8 Russia (WT)",
+          "language": "Russisch",
+          "lcn": 706,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 482000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "QVC Style HD",
+          "language": "Deutsch",
+          "lcn": 508,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "QVC HD",
+          "language": "Deutsch",
+          "lcn": 509,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "QVC ZWEI HD",
+          "language": "Deutsch",
+          "lcn": 510,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SIC Notícias (WT)",
+          "language": "Portugiesisch",
+          "lcn": 690,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 490000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "RTLup HD (WT)",
+          "language": "Deutsch",
+          "lcn": 119,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "VOXup HD (WT)",
+          "language": "Deutsch",
+          "lcn": 120,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "TOGGO plus HD (WT)",
+          "language": "Deutsch",
+          "lcn": 406,
+          "bouquet": "HaiD"
+        }
+      ],
+      "bouquets": [
+        "HaiD"
+      ]
+    },
+    {
+      "frequency_hz": 498000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "SAT.1 emotions HD (WT)",
+          "language": "Deutsch",
+          "lcn": 358,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Schlager Deluxe",
+          "language": "Deutsch",
+          "lcn": 471,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 514000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "WDR HD Aachen",
+          "language": "Deutsch",
+          "lcn": 161,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Bielefeld",
+          "language": "Deutsch",
+          "lcn": 162,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Bonn",
+          "language": "Deutsch",
+          "lcn": 163,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Dortmund",
+          "language": "Deutsch",
+          "lcn": 164,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Duisburg",
+          "language": "Deutsch",
+          "lcn": 165,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Düsseldorf",
+          "language": "Deutsch",
+          "lcn": 166,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Essen",
+          "language": "Deutsch",
+          "lcn": 167,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Köln",
+          "language": "Deutsch",
+          "lcn": 168,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Münster",
+          "language": "Deutsch",
+          "lcn": 169,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Siegen",
+          "language": "Deutsch",
+          "lcn": 170,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR HD Wuppertal",
+          "language": "Deutsch",
+          "lcn": 171,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WDR Mediathek (Internet)",
+          "language": "Deutsch",
+          "lcn": 219,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 546000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "TVI Internacional (WT)",
+          "language": "Portugiesisch",
+          "lcn": 688,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TNT4 International (WT)",
+          "language": "Mehrsprachig",
+          "lcn": 701,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "beIN Gurme HD (WT)",
+          "language": "Türkisch",
+          "lcn": 750,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "beIN IZ TV HD (WT)",
+          "language": "Türkisch",
+          "lcn": 751,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "beIN Movies Turk HD (WT)",
+          "language": "Türkisch",
+          "lcn": 758,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 554000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "sonnenklar.TV HD",
+          "language": "Deutsch",
+          "lcn": 514,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Spirit TV",
+          "language": "Deutsch",
+          "lcn": 524,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "PCNE Chinese HD",
+          "language": "Chinesisch",
+          "lcn": 597,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "CNN Int.",
+          "language": "Englisch",
+          "lcn": 609,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TVC News",
+          "language": "Englisch",
+          "lcn": 617,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TVN 24 HD (WT)",
+          "language": "Polnisch",
+          "lcn": 681,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TV 5 turk.",
+          "language": "Türkisch",
+          "lcn": 742,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 562000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "rbb Berlin HD",
+          "language": "Deutsch",
+          "lcn": 156,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "rbb Brandenburg HD",
+          "language": "Deutsch",
+          "lcn": 157,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 570000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "SR Fernsehen HD",
+          "language": "Deutsch",
+          "lcn": 158,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Radio Bremen HD",
+          "language": "Deutsch",
+          "lcn": 174,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ONE HD",
+          "language": "Deutsch",
+          "lcn": 232,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ARD alpha HD",
+          "language": "Deutsch",
+          "lcn": 325,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "tagesschau24 HD",
+          "language": "Deutsch",
+          "lcn": 380,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ARD-Test-R",
+          "language": "Deutsch",
+          "lcn": 999,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 578000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "RTL HD (WT)",
+          "language": "Deutsch",
+          "lcn": 104,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "SAT.1 HD (WT)",
+          "language": "Deutsch",
+          "lcn": 105,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "ProSieben HD (WT)",
+          "language": "Deutsch",
+          "lcn": 107,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "VOX HD (WT)",
+          "language": "Deutsch",
+          "lcn": 108,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "NITRO HD (WT)",
+          "language": "Deutsch",
+          "lcn": 234,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "ntv HD (WT)",
+          "language": "Deutsch",
+          "lcn": 379,
+          "bouquet": "HaiD"
+        }
+      ],
+      "bouquets": [
+        "HaiD"
+      ]
+    },
+    {
+      "frequency_hz": 586000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "RTL 2 HD (WT)",
+          "language": "Deutsch",
+          "lcn": 109,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "sixx HD (WT)",
+          "language": "Deutsch",
+          "lcn": 110,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "SUPER RTL HD (WT)",
+          "language": "Deutsch",
+          "lcn": 405,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "Comedy Central HD (WT)",
+          "language": "Mehrsprachig",
+          "lcn": 457,
+          "bouquet": "HaiD"
+        }
+      ],
+      "bouquets": [
+        "HaiD"
+      ]
+    },
+    {
+      "frequency_hz": 594000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "noa4 Hamburg HD",
+          "language": "Deutsch",
+          "lcn": 154,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Nick Jr. (WT)",
+          "language": "Deutsch",
+          "lcn": 431,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Shop LC",
+          "language": "Deutsch",
+          "lcn": 534,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TVR International",
+          "language": "Rumänisch",
+          "lcn": 693,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 602000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "TELE 5 HD (WT)",
+          "language": "Deutsch",
+          "lcn": 235,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "TLC HD (WT)",
+          "language": "Deutsch",
+          "lcn": 236,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "SPORT1 HD (WT)",
+          "language": "Deutsch",
+          "lcn": 300,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "NICK/CC+1 HD (WT)",
+          "language": "Mehrsprachig",
+          "lcn": 404,
+          "bouquet": "HaiD"
+        }
+      ],
+      "bouquets": [
+        "HaiD"
+      ]
+    },
+    {
+      "frequency_hz": 610000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "3sat HD",
+          "language": "Deutsch",
+          "lcn": 111,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ZDFinfo HD",
+          "language": "Deutsch",
+          "lcn": 329,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 618000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "SAT.1",
+          "language": "Deutsch",
+          "lcn": 125,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ProSieben",
+          "language": "Deutsch",
+          "lcn": 127,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SIXX",
+          "language": "Deutsch",
+          "lcn": 130,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Pro7 MAXX",
+          "language": "Deutsch",
+          "lcn": 251,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SAT.1 Gold",
+          "language": "Deutsch",
+          "lcn": 254,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TELE 5",
+          "language": "Deutsch",
+          "lcn": 255,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SPORT1",
+          "language": "Deutsch",
+          "lcn": 311,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "WELT",
+          "language": "Deutsch",
+          "lcn": 389,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 626000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "QVC Deutschland",
+          "language": "Deutsch",
+          "lcn": 531,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Bloomberg Europe TV",
+          "language": "Englisch",
+          "lcn": 605,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Pink Extra (WT)",
+          "language": "Serbisch",
+          "lcn": 718,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Pink Film (WT)",
+          "language": "Serbisch",
+          "lcn": 719,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Pink Folk (WT)",
+          "language": "Serbisch",
+          "lcn": 720,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Pink Music (WT)",
+          "language": "Serbisch",
+          "lcn": 721,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Pink Plus (WT)",
+          "language": "Serbisch",
+          "lcn": 722,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "ATV Avrupa (WT)",
+          "language": "Türkisch",
+          "lcn": 744,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 634000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "ProSieben MAXX HD (WT)",
+          "language": "Deutsch",
+          "lcn": 233,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "wedo movies HD",
+          "language": "Deutsch",
+          "lcn": 238,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ANIXE+",
+          "language": "Deutsch",
+          "lcn": 247,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Al-Arabiya HD (WT)",
+          "language": "Arabisch",
+          "lcn": 573,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Al Jazeera English",
+          "language": "Englisch",
+          "lcn": 603,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "HaiD",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 650000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "RTL Television",
+          "language": "Deutsch",
+          "lcn": 124,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "VOX",
+          "language": "Deutsch",
+          "lcn": 128,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTLZWEI",
+          "language": "Deutsch",
+          "lcn": 129,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTL HB NDS",
+          "language": "Deutsch",
+          "lcn": 198,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTL HH SH",
+          "language": "Deutsch",
+          "lcn": 199,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NITRO",
+          "language": "Deutsch",
+          "lcn": 252,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ntv",
+          "language": "Deutsch",
+          "lcn": 390,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SUPER RTL",
+          "language": "Deutsch",
+          "lcn": 414,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Channel21",
+          "language": "Deutsch",
+          "lcn": 525,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 658000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "ZDF HD",
+          "language": "Deutsch",
+          "lcn": 102,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "zdf_neo HD",
+          "language": "Deutsch",
+          "lcn": 237,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 666000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "TIDE.tv HD",
+          "language": "Deutsch",
+          "lcn": 175,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV"
+      ]
+    },
+    {
+      "frequency_hz": 674000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "SAT.1 HH/SH",
+          "language": "Deutsch",
+          "lcn": 200,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Sportdigital EDGE! HD (WT)",
+          "language": "Englisch",
+          "lcn": 321,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "NICK/CC+1",
+          "language": "Deutsch",
+          "lcn": 412,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RiC",
+          "language": "Deutsch",
+          "lcn": 413,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Comedy Central",
+          "language": "Deutsch",
+          "lcn": 462,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "1-2-3.tv",
+          "language": "Deutsch",
+          "lcn": 523,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NTDTV",
+          "language": "Chinesisch",
+          "lcn": 596,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 682000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "CCTV-4",
+          "language": "Chinesisch",
+          "lcn": 595,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Camera Deputati",
+          "language": "Italienisch",
+          "lcn": 651,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Rai Storia HD (WT)",
+          "language": "Italienisch",
+          "lcn": 661,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Arirang TV HD",
+          "language": "Englisch",
+          "lcn": 665,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "24H HD (WT)",
+          "language": "Spanisch",
+          "lcn": 730,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TVE Internacional HD (WT)",
+          "language": "Spanisch",
+          "lcn": 734,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TRT Cocuk (WT)",
+          "language": "Türkisch",
+          "lcn": 756,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 690000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "ANIXE HD",
+          "language": "Deutsch",
+          "lcn": 231,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTLup",
+          "language": "Deutsch",
+          "lcn": 253,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TOGGO plus",
+          "language": "Deutsch",
+          "lcn": 415,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "NHK World-Japan HD",
+          "language": "Englisch",
+          "lcn": 613,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Sky News Intl",
+          "language": "Englisch",
+          "lcn": 616,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TRT Türk",
+          "language": "Türkisch",
+          "lcn": 741,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TV8 Int HD (WT)",
+          "language": "Türkisch",
+          "lcn": 743,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 698000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Romance TV (WT)",
+          "language": "Deutsch",
+          "lcn": 274,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Tunisie Nationale",
+          "language": "Arabisch",
+          "lcn": 571,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Suryoyo Sat",
+          "language": "Armenisch",
+          "lcn": 579,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Balkanika Music TV (WT)",
+          "language": "Bulgarisch",
+          "lcn": 717,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 706000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Curiosity Channel HD (WT)",
+          "language": "Deutsch",
+          "lcn": 357,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "WELT HD (WT)",
+          "language": "Deutsch",
+          "lcn": 378,
+          "bouquet": "HaiD"
+        },
+        {
+          "name": "Armenia 1 TV",
+          "language": "Armenisch",
+          "lcn": 580,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "ATN Bangla UK",
+          "language": "Bengalisch",
+          "lcn": 581,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "BBC News Europe",
+          "language": "Englisch",
+          "lcn": 604,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "CGTN",
+          "language": "Englisch",
+          "lcn": 606,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "revelation",
+          "language": "Englisch",
+          "lcn": 614,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Record TV HD",
+          "language": "Portugiesisch",
+          "lcn": 686,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "PRO TV International",
+          "language": "Rumänisch",
+          "lcn": 692,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "Parlamento",
+          "language": "Spanisch",
+          "lcn": 728,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "HaiD",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 714000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "TIVEE",
+          "language": "Deutsch",
+          "lcn": 113,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SAT.1 NS/Bremen",
+          "language": "Deutsch",
+          "lcn": 201,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "AXN Black HD (WT)",
+          "language": "Deutsch",
+          "lcn": 268,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Penthouse Passion HD (WT)",
+          "language": "Englisch",
+          "lcn": 552,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "OTV Valentino",
+          "language": "Bosnisch",
+          "lcn": 584,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "TV5MONDE EUROPE HD",
+          "language": "Französisch",
+          "lcn": 641,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "BVN TV",
+          "language": "Niederländisch",
+          "lcn": 671,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "YOL TV",
+          "language": "Türkisch",
+          "lcn": 736,
+          "bouquet": "FreeTV"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 722000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Sky Crime",
+          "language": "Mehrsprachig",
+          "lcn": 832,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport F1",
+          "language": "Mehrsprachig",
+          "lcn": 852,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 1",
+          "language": "Mehrsprachig",
+          "lcn": 856,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 6",
+          "language": "Mehrsprachig",
+          "lcn": 861,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Top Event",
+          "language": "Mehrsprachig",
+          "lcn": 871,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 1",
+          "language": "Mehrsprachig",
+          "lcn": 873,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 6",
+          "language": "Mehrsprachig",
+          "lcn": 878,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 8",
+          "language": "Mehrsprachig",
+          "lcn": 929,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Cinema Premiere",
+          "language": "Mehrsprachig",
+          "lcn": 930,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Nature",
+          "language": "Mehrsprachig",
+          "lcn": 948,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 730000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Sky Replay",
+          "language": "Mehrsprachig",
+          "lcn": 824,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "SYFY",
+          "language": "Mehrsprachig",
+          "lcn": 827,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport News",
+          "language": "Deutsch",
+          "lcn": 851,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga",
+          "language": "Mehrsprachig",
+          "lcn": 855,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 3",
+          "language": "Mehrsprachig",
+          "lcn": 858,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Bundesliga 7",
+          "language": "Mehrsprachig",
+          "lcn": 862,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 3",
+          "language": "Mehrsprachig",
+          "lcn": 875,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport 7",
+          "language": "Mehrsprachig",
+          "lcn": 879,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 7",
+          "language": "Mehrsprachig",
+          "lcn": 928,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Cinema Classics",
+          "language": "Mehrsprachig",
+          "lcn": 933,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Cartoonito",
+          "language": "Mehrsprachig",
+          "lcn": 992,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 738000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Sky Atlantic",
+          "language": "Mehrsprachig",
+          "lcn": 822,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "13th Street",
+          "language": "Deutsch",
+          "lcn": 828,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Golf",
+          "language": "Mehrsprachig",
+          "lcn": 867,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Tennis",
+          "language": "Mehrsprachig",
+          "lcn": 872,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Sport Austria 2",
+          "language": "Mehrsprachig",
+          "lcn": 923,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Cinema Highlights",
+          "language": "Mehrsprachig",
+          "lcn": 936,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Sky Documentaries",
+          "language": "Mehrsprachig",
+          "lcn": 949,
+          "bouquet": "Pay-TV (SKY)"
+        },
+        {
+          "name": "Nicktoons",
+          "language": "Mehrsprachig",
+          "lcn": 990,
+          "bouquet": "Pay-TV (SKY)"
+        }
+      ],
+      "bouquets": [
+        "Pay-TV (SKY)"
+      ]
+    },
+    {
+      "frequency_hz": 754000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "13th Street HD (WT)",
+          "language": "Deutsch",
+          "lcn": 267,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "SyFy Universal HD (WT)",
+          "language": "Deutsch",
+          "lcn": 271,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Crime + Investigation HD (WT)",
+          "language": "Deutsch",
+          "lcn": 355,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "1-2-3.tv HD",
+          "language": "Deutsch",
+          "lcn": 501,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SHOW TURK HD (WT)",
+          "language": "Türkisch",
+          "lcn": 754,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 762000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "Zee Cinema (WT)",
+          "language": "Hindi",
+          "lcn": 648,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Zee TV (WT)",
+          "language": "Hindi",
+          "lcn": 649,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Croatian Music Channel (WT)",
+          "language": "Kroatisch",
+          "lcn": 667,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "OstWest24 HD",
+          "language": "Russisch",
+          "lcn": 699,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "RTVi (WT)",
+          "language": "Russisch",
+          "lcn": 702,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "OstWest (WT)",
+          "language": "Russisch",
+          "lcn": 703,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "TeleBom/TeleDom (WT)",
+          "language": "Russisch",
+          "lcn": 704,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Telehit Musica (WT)",
+          "language": "Spanisch",
+          "lcn": 735,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    },
+    {
+      "frequency_hz": 770000000,
+      "symbol_rate": 6900000,
+      "modulation": "QAM256",
+      "channels": [
+        {
+          "name": "noa4 Norderstedt HD",
+          "language": "Deutsch",
+          "lcn": 155,
+          "bouquet": "FreeTV"
+        },
+        {
+          "name": "SPORTDIGITAL FUSSBALL HD (WT)",
+          "language": "Deutsch",
+          "lcn": 322,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "Blue Hustler (WT)",
+          "language": "Englisch",
+          "lcn": 557,
+          "bouquet": "Pay-TV (WT)"
+        },
+        {
+          "name": "club MTV (WT)",
+          "language": "Englisch",
+          "lcn": 624,
+          "bouquet": "Pay-TV (WT)"
+        }
+      ],
+      "bouquets": [
+        "FreeTV",
+        "Pay-TV (WT)"
+      ]
+    }
+  ]
+}

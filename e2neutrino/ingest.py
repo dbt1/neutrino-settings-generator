@@ -202,7 +202,14 @@ def _load_config(path: Path) -> IngestConfig:
     sources_raw = data["sources"]
     if not isinstance(sources_raw, list):
         raise IngestError("'sources' must be a list")
-    sources = [source for source in sources_raw if isinstance(source, dict)]
+    base_dir = path.parent
+    sources: List[Dict[str, Any]] = []
+    for source in sources_raw:
+        if not isinstance(source, dict):
+            continue
+        enriched = dict(source)
+        enriched.setdefault("_config_dir", str(base_dir))
+        sources.append(enriched)
     allow_hosts = {host.lower() for host in DEFAULT_ALLOWED_HOSTS}
     extra_hosts = data.get("allow_hosts")
     if isinstance(extra_hosts, list):
@@ -295,6 +302,9 @@ def _fetch_source(
 def _fetch_file_source(source: Dict[str, Any], workspace: SourceWorkspace) -> FetchOutcome:
     path_value = source.get("path", "")
     path = Path(str(path_value))
+    if not path.is_absolute():
+        base_dir = Path(str(source.get("_config_dir", ".")))
+        path = (base_dir / path).resolve()
     if not path.exists():
         raise IngestError(f"file source {workspace.source_id} path {path} missing")
     _clear_directory(workspace.raw_dir)

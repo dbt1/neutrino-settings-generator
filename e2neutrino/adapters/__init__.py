@@ -81,6 +81,7 @@ def _bootstrap() -> None:
         "provider_ard",
         "provider_dvb_t2_de",
         "provider_simplitv_at",
+        "provider_wilhelm_tel_de",
         "provider_vodafone_de",
     ):
         import_module(f"{package}.{module}")
