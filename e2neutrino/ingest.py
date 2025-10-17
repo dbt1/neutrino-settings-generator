@@ -672,6 +672,6 @@ def _normalise_iterable(value: Optional[Union[Iterable[str], str]]) -> Optional[
     if isinstance(value, str):
         items = value.split(",")
     else:
-        items = value
+        items = list(value)
     result = [item.strip() for item in items if item and item.strip()]
     return result or None
