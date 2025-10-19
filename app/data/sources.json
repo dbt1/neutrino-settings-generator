@@ -1,0 +1,26 @@
+[
+  {
+    "id": "dvb-c",
+    "label_en": "DVB-C (Cable)",
+    "label_de": "DVB-C (Kabel)",
+    "status": "supported",
+    "description_en": "Cable frequency tables for major German providers.",
+    "description_de": "Kabel-Frequenzraster für große Anbieter in Deutschland."
+  },
+  {
+    "id": "dvb-t2",
+    "label_en": "DVB-T/T2 (Terrestrial)",
+    "label_de": "DVB-T/T2 (Terrestrik)",
+    "status": "supported",
+    "description_en": "Terrestrial multiplex listings for Germany and Austria.",
+    "description_de": "Terrestrische Multiplex-Übersichten für Deutschland und Österreich."
+  },
+  {
+    "id": "dvb-s",
+    "label_en": "DVB-S/S2 (Satellite)",
+    "label_de": "DVB-S/S2 (Satellit)",
+    "status": "unavailable",
+    "description_en": "Satellite packages are documented separately.",
+    "description_de": "Satellitenpakete werden separat dokumentiert."
+  }
+]

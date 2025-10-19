@@ -1,0 +1,50 @@
+[
+  {
+    "id": "vodafone-de",
+    "source_id": "dvb-c",
+    "name_en": "Vodafone Germany",
+    "name_de": "Vodafone Deutschland",
+    "region": "DE",
+    "last_updated": "2025-10-10",
+    "files": ["cable.xml", "bouquets.xml"],
+    "note_en": "Check your city-specific frequency page for overrides.",
+    "note_de": "Bitte die stadtbezogenen Frequenzseiten prüfen.",
+    "origin": "wilhelm-tel.de PDF frequency tables"
+  },
+  {
+    "id": "wilhelm-tel-de",
+    "source_id": "dvb-c",
+    "name_en": "wilhelm.tel (Hamburg)",
+    "name_de": "wilhelm.tel (Hamburg)",
+    "region": "DE-HH",
+    "last_updated": "2025-09-02",
+    "files": ["cable.xml", "bouquets.xml"],
+    "note_en": "Official cable lineup with QAM and symbol rate.",
+    "note_de": "Offizielle Kabelbelegung mit QAM und Symbolrate.",
+    "origin": "wilhelm-tel.de PDF frequency tables"
+  },
+  {
+    "id": "germany-national",
+    "source_id": "dvb-t2",
+    "name_en": "Germany National Multiplex",
+    "name_de": "Deutschland Bundesmux",
+    "region": "DE",
+    "last_updated": "2025-08-01",
+    "files": ["terrestrial.xml", "bouquets.xml"],
+    "note_en": "Reception depends on transmitter location.",
+    "note_de": "Empfang hängt vom Senderstandort ab.",
+    "origin": "dvb-t2hd.de transmitter list"
+  },
+  {
+    "id": "austria-simplitv",
+    "source_id": "dvb-t2",
+    "name_en": "Austria simpliTV",
+    "name_de": "Österreich simpliTV",
+    "region": "AT",
+    "last_updated": "2025-06-15",
+    "files": ["terrestrial.xml", "bouquets.xml"],
+    "note_en": "Regional mux selection required on the box.",
+    "note_de": "Regionaler Multiplex muss an der Box gewählt werden.",
+    "origin": "simpliTV channel list"
+  }
+]
