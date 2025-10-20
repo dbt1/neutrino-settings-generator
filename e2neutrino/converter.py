@@ -89,6 +89,7 @@ CATEGORY_PATTERNS: Dict[str, List[str]] = {
 }
 
 PAYTV_LOOKUP: List[Dict[str, Any]] = []
+PROVIDER_CATEGORY_LOOKUP: List[Dict[str, str]] = []
 
 
 def _apply_category_overrides() -> None:
@@ -155,6 +156,38 @@ def _load_paytv_catalog() -> None:
 
 
 _load_paytv_catalog()
+
+
+def _load_provider_categories() -> None:
+    try:
+        with resources.as_file(
+            resources.files("e2neutrino.data").joinpath("provider_categories.json")
+        ) as path:
+            if not path.exists():
+                return
+            catalog = json.loads(path.read_text("utf-8"))
+    except (ImportError, FileNotFoundError, json.JSONDecodeError):
+        return
+
+    order_mutable = list(CATEGORY_ORDER_BASE)
+    for entry in catalog:
+        provider_name = str(entry.get("provider", "")).strip()
+        target_category = str(entry.get("category", "")).strip()
+        if not provider_name or not target_category:
+            continue
+        if target_category not in CATEGORY_PATTERNS:
+            CATEGORY_PATTERNS[target_category] = []
+            order_mutable.append(target_category)
+        PROVIDER_CATEGORY_LOOKUP.append(
+            {
+                "provider": provider_name.lower(),
+                "category": target_category,
+            }
+        )
+    CATEGORY_ORDER_BASE[:] = order_mutable
+
+
+_load_provider_categories()
 
 CATEGORY_ORDER: Sequence[str] = tuple(CATEGORY_ORDER_BASE)
 
@@ -738,6 +771,9 @@ def _apply_category_bouquets(profile: Profile, name_map: Optional[Mapping[str, M
         category_buckets.setdefault(category, []).append(service)
         for paytv_category in _match_paytv_categories(service):
             category_buckets.setdefault(paytv_category, []).append(service)
+        provider_category = _match_provider_category(service)
+        if provider_category:
+            category_buckets.setdefault(provider_category, []).append(service)
 
     new_bouquets: List[Bouquet] = []
     general_entries = [_make_entry(service) for service in services_sorted if not service.is_radio]
@@ -778,6 +814,17 @@ def _match_paytv_categories(service: Service) -> List[str]:
                 matches.append(category)
                 break
     return matches
+
+
+def _match_provider_category(service: Service) -> Optional[str]:
+    provider = (service.provider or "").lower().strip()
+    if not provider:
+        return None
+    for entry in PROVIDER_CATEGORY_LOOKUP:
+        pattern = entry["provider"]
+        if pattern and pattern in provider:
+            return entry["category"]
+    return None
 
 
 def _make_entry(service: Service) -> BouquetEntry:

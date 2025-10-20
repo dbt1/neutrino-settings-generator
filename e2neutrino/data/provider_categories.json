@@ -1,0 +1,18 @@
+[
+  { "provider": "sky", "category": "PayTV - Sky" },
+  { "provider": "orf", "category": "ORF" },
+  { "provider": "servustv", "category": "ServusTV" },
+  { "provider": "bbc", "category": "BBC" },
+  { "provider": "rai", "category": "RAI" },
+  { "provider": "tf1", "category": "TF1" },
+  { "provider": "canal+", "category": "TF1" },
+  { "provider": "npo", "category": "Nederland" },
+  { "provider": "rtl nl", "category": "Nederland" },
+  { "provider": "ziggo", "category": "Nederland" },
+  { "provider": "antena 3", "category": "Spain" },
+  { "provider": "movistar", "category": "Spain" },
+  { "provider": "movistar+", "category": "Spain" },
+  { "provider": "rtve", "category": "Spain" },
+  { "provider": "rte ", "category": "Ireland" },
+  { "provider": "itv", "category": "UK" }
+]
