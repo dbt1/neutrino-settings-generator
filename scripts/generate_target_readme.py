@@ -43,6 +43,8 @@ def build_readme(
                 "| Source | Provider | Required file(s) | Last updated | Note |\n"
                 "| --- | --- | --- | --- | --- |\n"
             ),
+            "release_caption": "## Release Packages\n",
+            "release_headers": "| Archive | Contains |\n| --- | --- |\n",
             "howto_caption": "## Install\n",
             "howto_body": (
                 "1. ⬇️ Download the XMLs listed for your provider.\n"
@@ -81,6 +83,8 @@ def build_readme(
                 "| Source | Provider | Benötigte Datei(en) | Zuletzt aktualisiert | Hinweis |\n"
                 "| --- | --- | --- | --- | --- |\n"
             ),
+            "release_caption": "## Release-Pakete\n",
+            "release_headers": "| Archiv | Enthält |\n| --- | --- |\n",
             "howto_caption": "## Installation\n",
             "howto_body": (
                 "1. ⬇️ Lade die für deinen Provider aufgeführten XML-Dateien.\n"
@@ -130,6 +134,17 @@ def build_readme(
         description = t["card_descriptions"].get(filename, "")
         download_lines.append(f"| ⬇️ `{filename}` | {description} |\n")
     download_lines.append("\n")
+
+    release_lines: list[str] = [t["release_caption"], t["release_headers"]]
+    if bundles:
+        for bundle in bundles:
+            release_lines.append(
+                f"| ⬇️ [{bundle['label']}]({bundle['path']}) | {bundle['contents']} |\n"
+            )
+        release_lines.append("\n")
+    else:
+        release_lines.append(t["download_empty"])
+
 
     # Quick pick table rows
     table_lines = [t["table_caption"], t["table_headers"]]
@@ -235,6 +250,7 @@ def build_readme(
         t["intro"],
         *tldr_lines,
         *download_lines,
+        *release_lines,
         *table_lines,
         generated_caption,
         *generated_lines,
