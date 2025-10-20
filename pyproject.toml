@@ -44,6 +44,7 @@ exclude = ["tests", "samples", "examples"]
 
 [tool.setuptools.package-data]
 "e2neutrino.schemas" = ["*.json"]
+"e2neutrino.data" = ["*.json"]
 
 [tool.ruff]
 target-version = "py310"

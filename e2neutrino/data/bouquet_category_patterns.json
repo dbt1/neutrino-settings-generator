@@ -1,0 +1,64 @@
+{
+  "Sports": [
+    "sky bundesliga",
+    "eurosport360",
+    "dazn",
+    "sportdigital",
+    "nba",
+    "mlb"
+  ],
+  "Kids": [
+    "boomerang",
+    "nickelodeon",
+    "toggo",
+    "cartoonito"
+  ],
+  "Music": [
+    "folk tv",
+    "mezzo",
+    "stingray",
+    "deluxe music"
+  ],
+  "Shopping": [
+    "1-2-3.tv",
+    "shop lc",
+    "channel21",
+    "pearl.tv",
+    "astro tv"
+  ],
+  "Religion": [
+    "hope channel",
+    "efg",
+    "katolikus",
+    "shalom",
+    "ctv",
+    "bibeltv"
+  ],
+  "Adult": [
+    "blue hustler",
+    "private tv",
+    "venus",
+    "playboy",
+    "sext",
+    "xxl"
+  ],
+  "International": [
+    "ab sat",
+    "canal+",
+    "digital+",
+    "gol tv",
+    "m7 group",
+    "globecast",
+    "rai",
+    "nova",
+    "mb satellite"
+  ],
+  "Regional": [
+    "ard",
+    "orf",
+    "ard wdr",
+    "ard ndr",
+    "ard mdr",
+    "ard hr"
+  ]
+}

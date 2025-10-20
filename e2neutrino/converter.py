@@ -13,6 +13,7 @@ import logging
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from importlib import resources
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple, Union
 
@@ -31,7 +32,7 @@ from .scan import (
 
 log = logging.getLogger(__name__)
 
-CATEGORY_ORDER: Sequence[str] = (
+CATEGORY_ORDER_BASE: List[str] = [
     "Movies",
     "Series",
     "News",
@@ -39,23 +40,61 @@ CATEGORY_ORDER: Sequence[str] = (
     "Kids",
     "Music",
     "Documentary",
+    "Shopping",
+    "Religion",
+    "Adult",
+    "International",
     "Regional",
     "UHD/4K",
     "Others",
-)
+]
 
-CATEGORY_PATTERNS: Dict[str, Sequence[str]] = {
-    "Movies": (r"film", r"cine", r"movie", r"cinema"),
-    "Series": (r"serie", r"series", r"drama"),
-    "News": (r"news", r"nachrichten", r"journal", r"tagesschau"),
-    "Sports": (r"sport", r"bundesliga", r"uefa", r"espn", r"sky sport"),
-    "Kids": (r"kinder", r"kids", r"cartoon", r"disney", r"junior"),
-    "Music": (r"music", r"musik", r"mtv", r"viva"),
-    "Documentary": (r"doku", r"documentary", r"history", r"geo", r"planet", r"nat.?geo"),
-    "Regional": (r"regional", r"bayern", r"berlin", r"hamburg", r"ndr", r"mdr", r"rbb", r"swr", r"hr", r"wdr"),
-    "UHD/4K": (r"uhd", r"4k", r"ultra"),
-    "Others": (),
+CATEGORY_PATTERNS: Dict[str, List[str]] = {
+    "Movies": [r"film", r"cine", r"movie", r"cinema"],
+    "Series": [r"serie", r"series", r"drama"],
+    "News": [r"news", r"nachrichten", r"journal", r"tagesschau"],
+    "Sports": [r"sport", r"bundesliga", r"uefa", r"espn", r"sky sport"],
+    "Kids": [r"kinder", r"kids", r"cartoon", r"disney", r"junior"],
+    "Music": [r"music", r"musik", r"mtv", r"viva"],
+    "Documentary": [r"doku", r"documentary", r"history", r"geo", r"planet", r"nat.?geo"],
+    "Shopping": [r"shop", r"shopping", r"kauf", r"qvc", r"teleshop", r"hse"],
+    "Religion": [r"kirche", r"church", r"gottes", r"hope", r"bibel", r"faith", r"islam", r"evangel"],
+    "Adult": [r"xxl", r"erotik", r"adult", r"playboy", r"hustler", r"dorcel", r"redlight"],
+    "International": [r"france", r"turk", r"arab", r"ital", r"espan", r"globe", r"world", r"bbc", r"rai", r"bein"],
+    "Regional": [r"regional", r"bayern", r"berlin", r"hamburg", r"ndr", r"mdr", r"rbb", r"swr", r"hr", r"wdr"],
+    "UHD/4K": [r"uhd", r"4k", r"ultra"],
+    "Others": [],
 }
+
+
+def _apply_category_overrides() -> None:
+    try:
+        with resources.as_file(
+            resources.files("e2neutrino.data").joinpath("bouquet_category_patterns.json")
+        ) as path:
+            if not path.exists():
+                return
+            overrides = json.loads(path.read_text("utf-8"))
+    except (ImportError, FileNotFoundError):
+        return
+
+    order_mutable = list(CATEGORY_ORDER_BASE)
+    for category, keywords in overrides.items():
+        normalized = category.strip()
+        if not normalized:
+            continue
+        if normalized not in CATEGORY_PATTERNS:
+            CATEGORY_PATTERNS[normalized] = []
+            order_mutable.append(normalized)
+        existing = CATEGORY_PATTERNS[normalized]
+        existing.extend(keyword for keyword in keywords if keyword)
+        CATEGORY_PATTERNS[normalized] = existing
+    CATEGORY_ORDER_BASE[:] = order_mutable
+
+
+_apply_category_overrides()
+
+CATEGORY_ORDER: Sequence[str] = tuple(CATEGORY_ORDER_BASE)
 
 CATEGORY_REGEX: Dict[str, List[re.Pattern[str]]] = {
     category: [re.compile(pattern, re.IGNORECASE) for pattern in patterns]
