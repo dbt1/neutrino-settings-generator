@@ -4,6 +4,7 @@
     "eurosport360",
     "dazn",
     "sportdigital",
+    "moto gp",
     "nba",
     "mlb"
   ],
@@ -17,14 +18,17 @@
     "folk tv",
     "mezzo",
     "stingray",
-    "deluxe music"
+    "deluxe music",
+    "trace",
+    "mtv hits"
   ],
   "Shopping": [
     "1-2-3.tv",
     "shop lc",
     "channel21",
     "pearl.tv",
-    "astro tv"
+    "astro tv",
+    "mediashop"
   ],
   "Religion": [
     "hope channel",
@@ -32,7 +36,8 @@
     "katolikus",
     "shalom",
     "ctv",
-    "bibeltv"
+    "bibeltv",
+    "ewtn"
   ],
   "Adult": [
     "blue hustler",
@@ -40,7 +45,8 @@
     "venus",
     "playboy",
     "sext",
-    "xxl"
+    "xxl",
+    "dorcel"
   ],
   "International": [
     "ab sat",
@@ -51,7 +57,9 @@
     "globecast",
     "rai",
     "nova",
-    "mb satellite"
+    "mb satellite",
+    "fox international",
+    "bbc world"
   ],
   "Regional": [
     "ard",
@@ -59,6 +67,48 @@
     "ard wdr",
     "ard ndr",
     "ard mdr",
-    "ard hr"
+    "ard hr",
+    "bayerisches fernsehen",
+    "rbb",
+    "sachsen",
+    "hamburg"
+  ],
+  "Sky": [
+    "sky atlantic",
+    "sky cinema",
+    "sky one",
+    "sky sport",
+    "sky krimi",
+    "sky select",
+    "wow"
+  ],
+  "RTL": [
+    "rtl television",
+    "rtl zwei",
+    "vox",
+    "nitro",
+    "super rtl",
+    "ntv",
+    "voxup"
+  ],
+  "ProSiebenSat.1": [
+    "prosieben",
+    "kabel 1",
+    "sat.1",
+    "sixx",
+    "prosieben maxx",
+    "sat.1 gold",
+    "puls 4"
+  ],
+  "ARD/ZDF": [
+    "ard alpha",
+    "zdfneo",
+    "zdfinfo",
+    "phoenix",
+    "tagesschau24",
+    "ard hd",
+    "zdf hd",
+    "wdr hd",
+    "ndr hd"
   ]
 }
