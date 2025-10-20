@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "e2neutrino"
-version = "0.2.0"
+version = "0.3.0"
 description = "Convert Enigma2 settings into Neutrino (Zapit) profiles."
 readme = "README.en.md"
 license = "MIT"

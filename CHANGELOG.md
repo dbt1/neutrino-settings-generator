@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file by [release-please](https://github.com/google-github-actions/release-please-action).
 
+## [0.3.0] - 2025-10-21
+
+- Added PayTV-aware bouquet categories driven by regional operator metadata.
+- Introduced dynamic keyword overrides via JSON resources for easier maintenance.
+- Documented official channel list sources in publishing docs/READMEs.
+
 ## [0.2.0] - 2025-10-20
 
 - Skip demo fixture packages during publishing to silence workflow warnings.
