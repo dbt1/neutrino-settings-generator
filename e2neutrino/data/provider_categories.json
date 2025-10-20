@@ -9,10 +9,15 @@
   { "provider": "npo", "category": "Nederland" },
   { "provider": "rtl nl", "category": "Nederland" },
   { "provider": "ziggo", "category": "Nederland" },
-  { "provider": "antena 3", "category": "Spain" },
+  { "provider": "srf", "category": "Switzerland" },
+  { "provider": "teleclub", "category": "Switzerland" },
   { "provider": "movistar", "category": "Spain" },
-  { "provider": "movistar+", "category": "Spain" },
   { "provider": "rtve", "category": "Spain" },
+  { "provider": "mediaset", "category": "Italy" },
+  { "provider": "tivusat", "category": "Italy" },
+  { "provider": "polsat", "category": "Poland" },
+  { "provider": "tvp", "category": "Poland" },
+  { "provider": "antena 3", "category": "Spain" },
   { "provider": "rte ", "category": "Ireland" },
   { "provider": "itv", "category": "UK" }
 ]

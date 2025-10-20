@@ -50,6 +50,11 @@ CATEGORY_ORDER_BASE: List[str] = [
     "RAI",
     "TF1",
     "Nederland",
+    "Austria",
+    "Switzerland",
+    "Spain",
+    "Italy",
+    "Poland",
     "PyTV",
     "Resolution - UHD",
     "Resolution - HD",
@@ -81,6 +86,11 @@ CATEGORY_PATTERNS: Dict[str, List[str]] = {
     "RAI": [r"rai", r"italia", r"rai sport", r"rai movie"],
     "TF1": [r"tf1", r"france", r"canal+", r"m6"],
     "Nederland": [r"npo", r"rtl ?[45]", r"sbs ?6", r"veronica", r"net ?5", r"ziggo"],
+    "Austria": [r"servus", r"orf", r"atv", r"oe24", r"krone tv", r"puls ?4"],
+    "Switzerland": [r"srf", r"schweiz", r"swiss", r"tele ?z?uri", r"3sat ch"],
+    "Spain": [r"espan", r"movistar", r"antena", r"rtve", r"tve", r"vamos"],
+    "Italy": [r"italia", r"mediaset", r"tivusat", r"canale", r"la7", r"rai"],
+    "Poland": [r"polonia", r"polsat", r"tvp", r"onet", r"canal\+ pol"],
     "PyTV": [r"pytv", r"py-tv"],
     "Shopping": [r"shop", r"shopping", r"kauf", r"qvc", r"teleshop", r"hse"],
     "Religion": [r"kirche", r"church", r"gottes", r"hope", r"bibel", r"faith", r"islam", r"evangel"],
@@ -96,6 +106,7 @@ CATEGORY_PATTERNS: Dict[str, List[str]] = {
 
 PAYTV_LOOKUP: List[Dict[str, Any]] = []
 PROVIDER_CATEGORY_LOOKUP: List[Dict[str, str]] = []
+RADIO_CATEGORY_PATTERNS: Dict[str, List[re.Pattern[str]]] = {}
 
 RESOLUTION_REGEX: List[Tuple[str, List[re.Pattern[str]]]] = [
     (
@@ -221,6 +232,25 @@ def _load_provider_categories() -> None:
 
 
 _load_provider_categories()
+
+
+def _load_radio_category_patterns() -> None:
+    try:
+        with resources.as_file(
+            resources.files("e2neutrino.data").joinpath("radio_category_patterns.json")
+        ) as path:
+            if not path.exists():
+                return
+            raw = json.loads(path.read_text("utf-8"))
+    except (ImportError, FileNotFoundError, json.JSONDecodeError):
+        return
+
+    for category, keywords in raw.items():
+        patterns = [re.compile(keyword, re.IGNORECASE) for keyword in keywords]
+        RADIO_CATEGORY_PATTERNS[category] = patterns
+
+
+_load_radio_category_patterns()
 
 CATEGORY_ORDER: Sequence[str] = tuple(CATEGORY_ORDER_BASE)
 
@@ -796,9 +826,12 @@ def _apply_category_bouquets(profile: Profile, name_map: Optional[Mapping[str, M
     )
     category_buckets: Dict[str, List[Service]] = {category: [] for category in CATEGORY_ORDER}
     radio_services: List[Service] = []
+    radio_category_buckets: Dict[str, List[Service]] = {}
     for service in services_sorted:
         if service.is_radio:
             radio_services.append(service)
+            for category in _match_radio_categories(service):
+                radio_category_buckets.setdefault(category, []).append(service)
             continue
         category = _infer_category(service)
         category_buckets.setdefault(category, []).append(service)
@@ -823,6 +856,10 @@ def _apply_category_bouquets(profile: Profile, name_map: Optional[Mapping[str, M
     if radio_services:
         radio_entries = [_make_entry(service) for service in radio_services]
         new_bouquets.append(Bouquet(name="Radio", entries=radio_entries, category="radio"))
+        for category, services_list in sorted(radio_category_buckets.items()):
+            entries = [_make_entry(service) for service in services_list]
+            if entries:
+                new_bouquets.append(Bouquet(name=category, entries=entries, category="radio"))
 
     # Append legacy bouquets at the end for reference, keeping original order.
     new_bouquets.extend(profile.bouquets)
@@ -880,6 +917,17 @@ def _match_resolution_categories(service: Service) -> List[str]:
             matches.append("Resolution - HD")
         elif value in {"SD"}:
             matches.append("Resolution - SD")
+    return matches
+
+
+def _match_radio_categories(service: Service) -> List[str]:
+    if not RADIO_CATEGORY_PATTERNS:
+        return []
+    haystack = f"{service.name} {(service.provider or '')}".lower()
+    matches: List[str] = []
+    for category, patterns in RADIO_CATEGORY_PATTERNS.items():
+        if any(pattern.search(haystack) for pattern in patterns):
+            matches.append(category)
     return matches
 
 

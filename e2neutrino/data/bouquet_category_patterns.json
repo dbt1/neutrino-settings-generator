@@ -112,6 +112,12 @@
     "oe3",
     "orf III"
   ],
+  "Austria": [
+    "krone tv",
+    "puls 24",
+    "guten abend",
+    "atv"
+  ],
   "BBC": [
     "bbc",
     "cbbc",
@@ -140,6 +146,35 @@
     "veronica",
     "net 5",
     "ziggo"
+  ],
+  "Switzerland": [
+    "srf",
+    "3+",
+    "5+",
+    "schweiz",
+    "tele",
+    "oneplus"
+  ],
+  "Spain": [
+    "movistar",
+    "antena",
+    "rtve",
+    "tve",
+    "la sexta",
+    "atresmedia"
+  ],
+  "Italy": [
+    "mediaset",
+    "canale",
+    "italia",
+    "sky it",
+    "tivusat"
+  ],
+  "Poland": [
+    "polsat",
+    "tvp",
+    "canal+ pol",
+    "onet"
   ],
   "PyTV": [
     "pytv",

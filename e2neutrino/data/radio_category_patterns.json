@@ -1,0 +1,36 @@
+{
+  "Radio - News": [
+    "bbc",
+    "npr",
+    "deutschlandfunk",
+    "info",
+    "news",
+    "welt",
+    "oe1"
+  ],
+  "Radio - Music": [
+    "fm",
+    "hits",
+    "music",
+    "rock",
+    "klassik",
+    "jazz",
+    "pop"
+  ],
+  "Radio - Regional": [
+    "wdr",
+    "ndr",
+    "mdr",
+    "swr",
+    "hr",
+    "br",
+    "orf"
+  ],
+  "Radio - International": [
+    "bbc",
+    "rai",
+    "rtve",
+    "rtbf",
+    "cbc"
+  ]
+}
