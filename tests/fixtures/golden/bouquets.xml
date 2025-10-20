@@ -5,6 +5,9 @@
     <channel service_ref="1:0:1:03e9:0001:0001:00000001:0:0:0:" name="Cable One" service_name="Cable One" provider="CableCo" sid="1001" onid="1" tsid="1" />
     <channel service_ref="1:0:1:012d:0419:0001:00c00000:0:0:0:" name="Test Channel HD" service_name="Test Channel HD" provider="Test Provider" sid="301" onid="1" tsid="1049" />
   </bouquet>
+  <bouquet name="Resolution - HD" category="tv">
+    <channel service_ref="1:0:1:012d:0419:0001:00c00000:0:0:0:" name="Test Channel HD" service_name="Test Channel HD" provider="Test Provider" sid="301" onid="1" tsid="1049" />
+  </bouquet>
   <bouquet name="Others" category="tv">
     <channel service_ref="1:0:1:012e:0419:0001:00c00000:0:0:0:" name="Another Channel" service_name="Another Channel" provider="Another Provider" sid="302" onid="1" tsid="1049" />
     <channel service_ref="1:0:1:03e9:0001:0001:00000001:0:0:0:" name="Cable One" service_name="Cable One" provider="CableCo" sid="1001" onid="1" tsid="1" />

@@ -51,6 +51,9 @@ CATEGORY_ORDER_BASE: List[str] = [
     "TF1",
     "Nederland",
     "PyTV",
+    "Resolution - UHD",
+    "Resolution - HD",
+    "Resolution - SD",
     "Shopping",
     "Religion",
     "Adult",
@@ -85,11 +88,41 @@ CATEGORY_PATTERNS: Dict[str, List[str]] = {
     "International": [r"france", r"turk", r"arab", r"ital", r"espan", r"globe", r"world", r"bbc", r"rai", r"bein"],
     "Regional": [r"regional", r"bayern", r"berlin", r"hamburg", r"ndr", r"mdr", r"rbb", r"swr", r"hr", r"wdr"],
     "UHD/4K": [r"uhd", r"4k", r"ultra"],
+    "Resolution - UHD": [],
+    "Resolution - HD": [],
+    "Resolution - SD": [],
     "Others": [],
 }
 
 PAYTV_LOOKUP: List[Dict[str, Any]] = []
 PROVIDER_CATEGORY_LOOKUP: List[Dict[str, str]] = []
+
+RESOLUTION_REGEX: List[Tuple[str, List[re.Pattern[str]]]] = [
+    (
+        "Resolution - UHD",
+        [
+            re.compile(r"\buhd\b", re.IGNORECASE),
+            re.compile(r"\b4k\b", re.IGNORECASE),
+            re.compile(r"ultra\s*hd", re.IGNORECASE),
+            re.compile(r"hdr\b", re.IGNORECASE),
+        ],
+    ),
+    (
+        "Resolution - HD",
+        [
+            re.compile(r"(?<!u)hd\+?\b", re.IGNORECASE),
+            re.compile(r"full\s*hd", re.IGNORECASE),
+            re.compile(r"high\s*definition", re.IGNORECASE),
+        ],
+    ),
+    (
+        "Resolution - SD",
+        [
+            re.compile(r"\bsd\b", re.IGNORECASE),
+            re.compile(r"standard\s*definition", re.IGNORECASE),
+        ],
+    ),
+]
 
 
 def _apply_category_overrides() -> None:
@@ -774,6 +807,8 @@ def _apply_category_bouquets(profile: Profile, name_map: Optional[Mapping[str, M
         provider_category = _match_provider_category(service)
         if provider_category:
             category_buckets.setdefault(provider_category, []).append(service)
+        for resolution_category in _match_resolution_categories(service):
+            category_buckets.setdefault(resolution_category, []).append(service)
 
     new_bouquets: List[Bouquet] = []
     general_entries = [_make_entry(service) for service in services_sorted if not service.is_radio]
@@ -825,6 +860,27 @@ def _match_provider_category(service: Service) -> Optional[str]:
         if pattern and pattern in provider:
             return entry["category"]
     return None
+
+
+def _match_resolution_categories(service: Service) -> List[str]:
+    haystack = f"{service.name} {(service.provider or '')}".lower()
+    matches: List[str] = []
+    for category, regexes in RESOLUTION_REGEX:
+        if any(regex.search(haystack) for regex in regexes):
+            if category == "Resolution - SD" and matches:
+                continue
+            matches.append(category)
+            if category != "Resolution - SD":
+                break
+    if not matches and service.extra.get("resolution"):
+        value = service.extra["resolution"].upper()
+        if value in {"UHD", "4K"}:
+            matches.append("Resolution - UHD")
+        elif value in {"HD", "FHD"}:
+            matches.append("Resolution - HD")
+        elif value in {"SD"}:
+            matches.append("Resolution - SD")
+    return matches
 
 
 def _make_entry(service: Service) -> BouquetEntry:
