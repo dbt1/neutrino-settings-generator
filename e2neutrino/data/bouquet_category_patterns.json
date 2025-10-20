@@ -100,6 +100,47 @@
     "sat.1 gold",
     "puls 4"
   ],
+  "ServusTV": [
+    "servustv",
+    "servus tv"
+  ],
+  "ORF": [
+    "orf",
+    "oe24",
+    "oe1",
+    "oe2",
+    "oe3",
+    "orf III"
+  ],
+  "BBC": [
+    "bbc",
+    "cbbc",
+    "cbeebies",
+    "bbc world"
+  ],
+  "RAI": [
+    "rai",
+    "rai sport",
+    "rai movie",
+    "rai news"
+  ],
+  "TF1": [
+    "tf1",
+    "france",
+    "canal+",
+    "m6",
+    "tfx"
+  ],
+  "Nederland": [
+    "npo",
+    "rtl 4",
+    "rtl 5",
+    "rtl 7",
+    "sbs 6",
+    "veronica",
+    "net 5",
+    "ziggo"
+  ],
   "PyTV": [
     "pytv",
     "py-tv",
