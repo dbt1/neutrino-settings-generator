@@ -1,0 +1,62 @@
+[
+  {
+    "brand": "Sky",
+    "country": "DE",
+    "resolution": "HD",
+    "keywords": [
+      "sky sport",
+      "sky bundesliga",
+      "sky cinema",
+      "sky atlantic",
+      "sky krimi",
+      "syfy",
+      "13th street",
+      "universal tv",
+      "e! entertainment",
+      "comedy central extra"
+    ]
+  },
+  {
+    "brand": "Sky",
+    "country": "DE",
+    "resolution": "UHD",
+    "keywords": [
+      "sky sport uhd",
+      "sky bundesliga uhd",
+      "uhd1 by astra"
+    ]
+  },
+  {
+    "brand": "Sky",
+    "country": "UK",
+    "resolution": "HD",
+    "keywords": [
+      "sky showcase",
+      "sky witness",
+      "sky max",
+      "sky sports",
+      "sky cinema uk"
+    ]
+  },
+  {
+    "brand": "Canal+",
+    "country": "FR",
+    "resolution": "HD",
+    "keywords": [
+      "canal+",
+      "ciné+",
+      "ocs",
+      "foot+",
+      "canal plus"
+    ]
+  },
+  {
+    "brand": "DAZN",
+    "country": "DE",
+    "resolution": "HD",
+    "keywords": [
+      "dazn",
+      "fast+ dazn"
+    ]
+  }
+]

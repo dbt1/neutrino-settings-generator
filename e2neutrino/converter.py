@@ -76,6 +76,8 @@ CATEGORY_PATTERNS: Dict[str, List[str]] = {
     "Others": [],
 }
 
+PAYTV_LOOKUP: List[Dict[str, Any]] = []
+
 
 def _apply_category_overrides() -> None:
     try:
@@ -85,7 +87,7 @@ def _apply_category_overrides() -> None:
             if not path.exists():
                 return
             overrides = json.loads(path.read_text("utf-8"))
-    except (ImportError, FileNotFoundError):
+    except (ImportError, FileNotFoundError, json.JSONDecodeError):
         return
 
     order_mutable = list(CATEGORY_ORDER_BASE)
@@ -103,6 +105,44 @@ def _apply_category_overrides() -> None:
 
 
 _apply_category_overrides()
+
+
+def _load_paytv_catalog() -> None:
+    try:
+        with resources.as_file(
+            resources.files("e2neutrino.data").joinpath("paytv_networks.json")
+        ) as path:
+            if not path.exists():
+                return
+            catalog = json.loads(path.read_text("utf-8"))
+    except (ImportError, FileNotFoundError, json.JSONDecodeError):
+        return
+
+    order_mutable = list(CATEGORY_ORDER_BASE)
+    for entry in catalog:
+        brand = str(entry.get("brand", "")).strip()
+        if not brand:
+            continue
+        country = str(entry.get("country", "")).strip()
+        resolution = str(entry.get("resolution", "")).strip()
+        keywords_raw = entry.get("keywords", [])
+        keywords = [str(item).lower() for item in keywords_raw if str(item).strip()]
+        if not keywords:
+            continue
+        parts = ["PayTV", brand]
+        if country:
+            parts.append(country)
+        if resolution:
+            parts.append(resolution)
+        category_name = " - ".join(parts)
+        if category_name not in CATEGORY_PATTERNS:
+            CATEGORY_PATTERNS[category_name] = []
+            order_mutable.append(category_name)
+        PAYTV_LOOKUP.append({"category": category_name, "keywords": keywords})
+    CATEGORY_ORDER_BASE[:] = order_mutable
+
+
+_load_paytv_catalog()
 
 CATEGORY_ORDER: Sequence[str] = tuple(CATEGORY_ORDER_BASE)
 
@@ -684,6 +724,8 @@ def _apply_category_bouquets(profile: Profile, name_map: Optional[Mapping[str, M
             continue
         category = _infer_category(service)
         category_buckets.setdefault(category, []).append(service)
+        for paytv_category in _match_paytv_categories(service):
+            category_buckets.setdefault(paytv_category, []).append(service)
 
     new_bouquets: List[Bouquet] = []
     general_entries = [_make_entry(service) for service in services_sorted if not service.is_radio]
@@ -711,6 +753,19 @@ def _infer_category(service: Service) -> str:
             if pattern.search(haystack):
                 return category
     return "Others"
+
+
+def _match_paytv_categories(service: Service) -> List[str]:
+    name = service.name.lower()
+    provider = (service.provider or "").lower()
+    matches: List[str] = []
+    for entry in PAYTV_LOOKUP:
+        category = entry["category"]
+        for keyword in entry["keywords"]:
+            if keyword in name or keyword in provider:
+                matches.append(category)
+                break
+    return matches
 
 
 def _make_entry(service: Service) -> BouquetEntry:
