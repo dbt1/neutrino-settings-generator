@@ -14,7 +14,7 @@ jobs:
     env:
       PUBLISH_TOKEN: ${{ secrets.PAT_PUSH_NEUTRINO_SETTINGS != '' && secrets.PAT_PUSH_NEUTRINO_SETTINGS || secrets.ENV_GLOBAL != '' && secrets.ENV_GLOBAL || vars.ENV_GLOBAL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v5
         with:
@@ -75,7 +75,7 @@ jobs:
 
       - name: Checkout target repository
         if: ${{ env.PUBLISH_TOKEN != '' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ env.TARGET_REPOSITORY }}
           token: ${{ env.PUBLISH_TOKEN }}
