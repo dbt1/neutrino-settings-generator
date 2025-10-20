@@ -182,7 +182,7 @@ def build_readme(
                             continue
                         rel = profile_dir.relative_to(generated_root).as_posix()
                         entries_by_category.setdefault(category, []).append(
-                            (source_dir.name, provider_dir.name, profile_dir.name, rel)
+                            (source_dir.name, provider_dir.name, profile_dir, rel)
                         )
 
     generated_lines: list[str] = []
@@ -190,8 +190,16 @@ def build_readme(
         for category in sorted(entries_by_category):
             generated_lines.append(f"### {category_heading(category)}\n")
             generated_lines.append(t["profiles_table_headers"])
-            for source, provider, _profile, rel in sorted(entries_by_category[category]):
-                generated_lines.append(f"| `{source}` | `{provider}` | `{rel}` |\n")
+            for source, provider, profile_path, rel in sorted(
+                entries_by_category[category], key=lambda item: (item[0], item[1], item[3])
+            ):
+                satellites = profile_path / "satellites.xml"
+                if satellites.exists():
+                    link = satellites.relative_to(generated_root).as_posix()
+                    rel_display = f"[satellites.xml]({link})"
+                else:
+                    rel_display = f"`{rel}`"
+                generated_lines.append(f"| `{source}` | `{provider}` | {rel_display} |\n")
             generated_lines.append("\n")
     else:
         fallback = {

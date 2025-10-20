@@ -226,6 +226,9 @@ def load_package_specs(path: Path) -> list[PackageSpec]:
         tags = _ensure_str_list(item.get("tags"))
         content_summary = item.get("content_summary")
 
+        if "demo" in tags:
+            continue
+
         if not package_id:
             raise ValueError("package entry missing 'package_id'")
         if package_id in seen_ids:

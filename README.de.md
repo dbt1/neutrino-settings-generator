@@ -194,6 +194,7 @@ Der Nightly-Workflow hält den Baum `generated/` synchron zu den aktuellsten Erg
 - Beitragende: `CONTRIBUTING.md`
 - Release-Ablauf: `RELEASE_PROCESS.md`
 - Operations-Handbuch: `OPERATIONS.md`
+- Veröffentlichungsleitfaden: `docs/PUBLISHING.md`
 - Security-Policy: `SECURITY.md`
 - Issue-Templates: `.github/ISSUE_TEMPLATE/`
 - Änderungsverlauf: `CHANGELOG.md` (verwaltet durch `release-please`)

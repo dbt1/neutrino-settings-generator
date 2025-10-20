@@ -194,6 +194,7 @@ The nightly workflow keeps the `generated/` tree in sync with the latest convers
 - Contribution guidelines: `CONTRIBUTING.md`
 - Release SOP: `RELEASE_PROCESS.md`
 - Operations handbook: `OPERATIONS.md`
+- Publishing guide: `docs/PUBLISHING.md`
 - Security policy: `SECURITY.md`
 - Issue templates: `.github/ISSUE_TEMPLATE/`
 - Change history: `CHANGELOG.md` (managed by `release-please`)
