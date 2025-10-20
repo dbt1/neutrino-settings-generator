@@ -114,6 +114,34 @@ Both commands honour `--verbose` on the root group for debug logging.
 - CI and nightly workflows publish aggregated QA artefacts (`qa-report` archive) and fail early when thresholds are not met.
 - Inspect `qa_report.md` for each profile to review service counts, stale-source detection, and deduplication summaries before promoting artefacts.
 
+### Customising Bouquet Categories
+
+Bouquet generation relies on several data-driven lookups. You can extend or override the defaults without touching code:
+
+- `e2neutrino/data/bouquet_category_patterns.json`
+  - Adds keyword → category mappings (e.g. grouping all “ServusTV” entries into an “Austria” bouquet).
+  - Example:
+    ```json
+    {
+      "My Network": ["my network", "mychannel"]
+    }
+    ```
+- `e2neutrino/data/paytv_networks.json`
+  - Declares pay-TV operators per country/resolution. Each entry creates a bouquet name like `PayTV – Sky – DE – HD`.
+- `e2neutrino/data/provider_categories.json`
+  - Maps provider strings to a bouquet category (useful when the service name itself does not contain the brand).
+- `e2neutrino/data/radio_category_patterns.json`
+  - Mirrors the TV patterns for radio bouquets (e.g. `Radio - News`, `Radio - Music`).
+
+During conversion the engine
+
+1. Matches service names/providers against `CATEGORY_PATTERNS` + overrides.
+2. Applies pay-TV and provider mappings for TV services.
+3. Detects `Resolution - UHD/HD/SD` via name keywords (`UHD`, `4K`, `HD`, `SD`) or optional `service.extra["resolution"]` metadata.
+4. Builds radio bouquets using the radio patterns (fallback: a single `Radio` bouquet).
+
+> Tip: keep custom JSON files under version control or ship them via packages so that automated pipelines pick them up consistently.
+
 ## CI/CD Pipelines
 
 | Workflow | Trigger | Purpose |

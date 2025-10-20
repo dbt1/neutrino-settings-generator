@@ -115,6 +115,34 @@ Beide Befehle unterstützen `--verbose` (Root-Option) für detailliertes Logging
 - Vor der Freigabe die jeweiligen `qa_report.md` prüfen: Sie enthalten Senderstatistiken, Hinweise auf veraltete Quellen sowie
   eine Übersicht der entfernten Duplikate.
 
+### Bouquets gezielt steuern
+
+Die Kategorisierung erfolgt datengetrieben und kann ohne Codeänderung erweitert werden. Relevante Dateien:
+
+- `e2neutrino/data/bouquet_category_patterns.json`
+  - Schlüsselwort → Kategorie-Zuordnung (z. B. alle ServusTV-Sender in „Austria“).
+  - Beispiel:
+    ```json
+    {
+      "Mein Paket": ["mein sender", "mein netzwerk"]
+    }
+    ```
+- `e2neutrino/data/paytv_networks.json`
+  - Deklariert PayTV-Operatoren inklusive Land/Auflösung. Daraus entstehen Bouquets à la `PayTV – Sky – DE – HD`.
+- `e2neutrino/data/provider_categories.json`
+  - Weist Provider-Bezeichnungen einer Kategorie zu, falls der Sendername allein nicht ausreicht.
+- `e2neutrino/data/radio_category_patterns.json`
+  - Entsprechende Regeln für Radiobouquets (`Radio - News`, `Radio - Music`, …).
+
+Der Konverter
+
+1. matched Sendernamen/Provider gegen `CATEGORY_PATTERNS` bzw. Overrides,
+2. ergänzt PayTV- und Provider-Bouquets für TV-Dienste,
+3. erkennt Auflösungen (`Resolution - UHD/HD/SD`) über Namens-Muster oder optionale `extra["resolution"]`-Metadaten,
+4. baut Radiobouquets anhand der Radio-Pattern (Fallback: ein Gesamtbouquet `Radio`).
+
+> Tipp: Eigene JSON-Erweiterungen versionieren oder paketieren, damit automatisierte Pipelines stets denselben Stand verwenden.
+
 ## CI/CD-Pipelines
 
 | Workflow | Auslöser | Zweck |
