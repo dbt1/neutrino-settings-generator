@@ -195,6 +195,17 @@ The nightly workflow keeps the `generated/` tree in sync with the latest convers
 - Release SOP: `RELEASE_PROCESS.md`
 - Operations handbook: `OPERATIONS.md`
 - Publishing guide: `docs/PUBLISHING.md`
+- Official channel references:
+  - DVB-T2 HD regions: https://www.dvb-t2hd.de/regionen
+  - ASTRA 19.2°E overview: https://astra.de/tv-radio-mehr/senderuebersicht
+  - ARD Digital parameters: https://www.ard-digital.de/empfang/fernsehen-per-satellit/contentblocks/empfangsparameter-hd
+  - HD+ satellite lineup: https://www.hd-plus.de/themen/sender
+  - Vodafone cable lineup: https://www.vodafone.de/privat/fernsehen/sender.html
+  - PŸUR channel list: https://www.pyur.com/privat/fernsehen/senderliste
+  - MagentaTV channel downloads: https://www.telekom.de/hilfe/geraete/magenta-tv/senderlisten-downloads
+  - waipu.tv channels: https://www.waipu.tv/sender/
+  - Zattoo lineup: https://zattoo.com/de/sender
+  - DAB+ radio: https://www.dabplus.de/sender/
 - Security policy: `SECURITY.md`
 - Issue templates: `.github/ISSUE_TEMPLATE/`
 - Change history: `CHANGELOG.md` (managed by `release-please`)

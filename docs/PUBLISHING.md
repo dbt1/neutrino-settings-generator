@@ -28,6 +28,21 @@ Deutsch folgt unterhalb.
 
 The workflow `ci/nightly-settings` performs the same steps with the latest `make qa` output. Inspect the run log for warnings; demo fixtures are automatically ignored.
 
+### Reference: Official Channel Lists
+
+- DVB-T2 HD (Germany): https://www.dvb-t2hd.de/regionen
+- ASTRA 19.2°E overview: https://astra.de/tv-radio-mehr/senderuebersicht
+- ARD Digital parameters: https://www.ard-digital.de/empfang/fernsehen-per-satellit/contentblocks/empfangsparameter-hd
+- HD+ satellite lineup: https://www.hd-plus.de/themen/sender
+- Vodafone TV channel finder: https://www.vodafone.de/privat/fernsehen/sender.html
+- PŸUR channel list: https://www.pyur.com/privat/fernsehen/senderliste
+- MagentaTV channel downloads: https://www.telekom.de/hilfe/geraete/magenta-tv/senderlisten-downloads
+- waipu.tv channels: https://www.waipu.tv/sender/
+- Zattoo Germany lineup: https://zattoo.com/de/sender
+- DAB+ digital radio: https://www.dabplus.de/sender/
+- (Unofficial) KingOfSat ASTRA 19.2°E: https://de.kingofsat.net/pos-19.2E.php
+- (Unofficial) LyngSat ASTRA 1KR/1L/1M/1N: https://www.lyngsat.com/Astra-1KR-1L-1M-1N.html
+
 ## Deutsch – Lokaler Ablauf
 
 1. **Repos vorbereiten**
@@ -52,3 +67,18 @@ The workflow `ci/nightly-settings` performs the same steps with the latest `make
 ### Automatisierung per GitHub Actions
 
 Der Workflow `ci/nightly-settings` führt denselben Ablauf täglich durch. Warnungen im Log prüfen; Demo-Datensätze werden automatisch übersprungen.
+
+### Referenz: Offizielle Senderlisten
+
+- DVB-T2 HD (Deutschland): https://www.dvb-t2hd.de/regionen
+- ASTRA 19,2°E Übersicht: https://astra.de/tv-radio-mehr/senderuebersicht
+- ARD Digital Empfangsparameter: https://www.ard-digital.de/empfang/fernsehen-per-satellit/contentblocks/empfangsparameter-hd
+- HD+ Satellitenangebot: https://www.hd-plus.de/themen/sender
+- Vodafone TV Sender: https://www.vodafone.de/privat/fernsehen/sender.html
+- PŸUR Senderliste: https://www.pyur.com/privat/fernsehen/senderliste
+- MagentaTV Senderlisten: https://www.telekom.de/hilfe/geraete/magenta-tv/senderlisten-downloads
+- waipu.tv Sender: https://www.waipu.tv/sender/
+- Zattoo Deutschland: https://zattoo.com/de/sender
+- DAB+ Digitalradio: https://www.dabplus.de/sender/
+- (Inoffiziell) KingOfSat ASTRA 19.2°E: https://de.kingofsat.net/pos-19.2E.php
+- (Inoffiziell) LyngSat ASTRA 1KR/1L/1M/1N: https://www.lyngsat.com/Astra-1KR-1L-1M-1N.html

@@ -195,6 +195,17 @@ Der Nightly-Workflow hält den Baum `generated/` synchron zu den aktuellsten Erg
 - Release-Ablauf: `RELEASE_PROCESS.md`
 - Operations-Handbuch: `OPERATIONS.md`
 - Veröffentlichungsleitfaden: `docs/PUBLISHING.md`
+- Offizielle Sender-Referenzen:
+  - DVB-T2 HD Regionen: https://www.dvb-t2hd.de/regionen
+  - ASTRA 19,2°E Übersicht: https://astra.de/tv-radio-mehr/senderuebersicht
+  - ARD-Digital Empfangsparameter: https://www.ard-digital.de/empfang/fernsehen-per-satellit/contentblocks/empfangsparameter-hd
+  - HD+ Senderangebot: https://www.hd-plus.de/themen/sender
+  - Vodafone Kabel-Angebot: https://www.vodafone.de/privat/fernsehen/sender.html
+  - PŸUR Senderliste: https://www.pyur.com/privat/fernsehen/senderliste
+  - MagentaTV Senderlisten: https://www.telekom.de/hilfe/geraete/magenta-tv/senderlisten-downloads
+  - waipu.tv Sender: https://www.waipu.tv/sender/
+  - Zattoo Programm: https://zattoo.com/de/sender
+  - DAB+ Radio: https://www.dabplus.de/sender/
 - Security-Policy: `SECURITY.md`
 - Issue-Templates: `.github/ISSUE_TEMPLATE/`
 - Änderungsverlauf: `CHANGELOG.md` (verwaltet durch `release-please`)
