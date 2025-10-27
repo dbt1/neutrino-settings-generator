@@ -43,7 +43,7 @@ jobs:
           python scripts/package_outputs.py out publish
 
       - name: Upload artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: settings-bundles
           path: publish/releases/*/*
@@ -51,7 +51,7 @@ jobs:
 
       - name: Upload QA report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: qa-report
           path: |
