@@ -268,8 +268,8 @@ def _parse_satellite_scanfile(path: Path) -> Dict[str, object]:
         if position:
             try:
                 satellite["position"] = int(position)
-            except ValueError:
-                raise ValidationError(f"satellites.xml invalid position: {position}")
+            except ValueError as err:
+                raise ValidationError(f"satellites.xml invalid position: {position}") from err
         transponders = []
         for trans_el in sat_el.findall("transponder"):
             transponder: Dict[str, object] = {}
