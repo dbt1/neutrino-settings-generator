@@ -220,8 +220,14 @@ def _validate_bouquets_xml(path: Path) -> None:
 def _validate_scanfiles(output_dir: Path) -> None:
     tasks = [
         (
-            "cable",
-            output_dir / "cable.xml",
+            "satellites",
+            output_dir / "satellites.xml",
+            "scanfile.satellite.schema.json",
+            _parse_satellite_scanfile,
+        ),
+        (
+            "cables",
+            output_dir / "cables.xml",
             "scanfile.cable.schema.json",
             _parse_cable_scanfile,
         ),
@@ -246,16 +252,54 @@ def _validate_scanfiles(output_dir: Path) -> None:
             raise ValidationError(f"{kind}.xml failed schema validation: {messages}")
 
 
+def _parse_satellite_scanfile(path: Path) -> Dict[str, object]:
+    """Parse satellites.xml for validation (Neutrino format)."""
+    tree = ET.parse(path)
+    root = tree.getroot()
+    if root.tag != "satellites":
+        raise ValidationError("satellites.xml root element must be <satellites>")
+    satellites: List[Dict[str, object]] = []
+    for sat_el in root.findall("sat"):
+        name = (sat_el.get("name") or "").strip()
+        if not name:
+            raise ValidationError("satellites.xml sat missing name attribute")
+        satellite: Dict[str, object] = {"name": name}
+        position = sat_el.get("position")
+        if position:
+            try:
+                satellite["position"] = int(position)
+            except ValueError:
+                raise ValidationError(f"satellites.xml invalid position: {position}")
+        transponders = []
+        for trans_el in sat_el.findall("transponder"):
+            transponder: Dict[str, object] = {}
+            freq = trans_el.get("frequency")
+            if freq:
+                try:
+                    transponder["frequency_hz"] = int(freq)
+                except ValueError:
+                    pass
+            transponders.append(transponder)
+        if transponders:
+            satellite["transponders"] = transponders
+            satellites.append(satellite)
+    if not satellites:
+        raise ValidationError("satellites.xml contains no satellites with transponders")
+    return {"satellites": satellites}
+
+
 def _parse_cable_scanfile(path: Path) -> Dict[str, object]:
     tree = ET.parse(path)
     root = tree.getroot()
-    if root.tag != "cable":
-        raise ValidationError("cable.xml root element must be <cable>")
+    # Support both old (<cable>) and new (<cables>) format
+    if root.tag not in ("cable", "cables"):
+        raise ValidationError("cable.xml root element must be <cable> or <cables>")
     providers: List[Dict[str, object]] = []
-    for provider_el in root.findall("provider"):
+    # Support both old (<provider>) and new (<cable>) child elements
+    for provider_el in list(root.findall("provider")) + list(root.findall("cable")):
         name = (provider_el.get("name") or "").strip()
         if not name:
-            raise ValidationError("cable.xml provider missing name attribute")
+            raise ValidationError("cable.xml provider/cable missing name attribute")
         provider: Dict[str, object] = {"name": name}
         country = provider_el.get("country")
         if country:
@@ -280,13 +324,15 @@ def _parse_cable_scanfile(path: Path) -> Dict[str, object]:
 def _parse_terrestrial_scanfile(path: Path) -> Dict[str, object]:
     tree = ET.parse(path)
     root = tree.getroot()
-    if root.tag != "terrestrial":
-        raise ValidationError("terrestrial.xml root element must be <terrestrial>")
+    # Support both old (<terrestrial>) and new (<locations>) format
+    if root.tag not in ("terrestrial", "locations"):
+        raise ValidationError("terrestrial.xml root element must be <terrestrial> or <locations>")
     regions: List[Dict[str, object]] = []
-    for region_el in root.findall("region"):
+    # Support both old (<region>) and new (<terrestrial>) child elements
+    for region_el in list(root.findall("region")) + list(root.findall("terrestrial")):
         name = (region_el.get("name") or "").strip()
         if not name:
-            raise ValidationError("terrestrial.xml region missing name attribute")
+            raise ValidationError("terrestrial.xml region/terrestrial missing name attribute")
         region: Dict[str, object] = {"name": name}
         country = region_el.get("country")
         if country:

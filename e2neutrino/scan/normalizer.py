@@ -32,23 +32,26 @@ class ScanfileDedupDecision:
 @dataclass
 class ScanfileBundle:
     """
-    Grouped scanfile entries separated by provider (cable) / region (terrestrial).
+    Grouped scanfile entries separated by satellite (DVB-S/S2) / provider (cable) / region (terrestrial).
     """
 
     cable: Dict[str, List[TransponderScanEntry]] = field(default_factory=dict)
     terrestrial: Dict[str, List[TransponderScanEntry]] = field(default_factory=dict)
+    satellite: Dict[str, List[TransponderScanEntry]] = field(default_factory=dict)
     provenance: Dict[str, Dict[str, List[str]]] = field(default_factory=dict)
 
     def counts(self) -> Dict[str, Dict[str, int]]:
         return {
             "cable": {provider: len(entries) for provider, entries in self.cable.items()},
             "terrestrial": {region: len(entries) for region, entries in self.terrestrial.items()},
+            "satellite": {sat: len(entries) for sat, entries in self.satellite.items()},
         }
 
-    def total_entries(self) -> Tuple[int, int]:
+    def total_entries(self) -> Tuple[int, int, int]:
         return (
             sum(len(entries) for entries in self.cable.values()),
             sum(len(entries) for entries in self.terrestrial.values()),
+            sum(len(entries) for entries in self.satellite.values()),
         )
 
 
@@ -125,11 +128,19 @@ def deduplicate_scan_entries(
 def _group_entries(entries: Sequence[TransponderScanEntry]) -> ScanfileBundle:
     cable: Dict[str, List[TransponderScanEntry]] = {}
     terrestrial: Dict[str, List[TransponderScanEntry]] = {}
+    satellite: Dict[str, List[TransponderScanEntry]] = {}
     provenance: Dict[str, Dict[str, List[str]]] = {}
 
     for entry in entries:
         delivery = (entry.delivery_system or "").upper()
-        if delivery.startswith("DVB-C") or delivery == "CABLE":
+        if delivery.startswith("DVB-S") or delivery == "SATELLITE":
+            # Group by satellite name (provider field for satellites)
+            # Orbital position should be in extras["orbital_position"]
+            sat_name = entry.provider or entry.extras.get("satellite_name") or "Unknown"
+            bucket = satellite.setdefault(sat_name, [])
+            bucket.append(entry)
+            provenance.setdefault("satellite", {}).setdefault(sat_name, []).append(entry.source_provenance or "")
+        elif delivery.startswith("DVB-C") or delivery == "CABLE":
             provider = entry.provider or "Unknown"
             bucket = cable.setdefault(provider, [])
             bucket.append(entry)
@@ -144,12 +155,14 @@ def _group_entries(entries: Sequence[TransponderScanEntry]) -> ScanfileBundle:
             key = entry.provider or entry.region or "unknown"
             provenance.setdefault("ignored", {}).setdefault(key, []).append(entry.source_provenance or "")
 
+    for entries_list in satellite.values():
+        entries_list.sort(key=_satellite_sort_key)
     for entries_list in cable.values():
         entries_list.sort(key=_cable_sort_key)
     for entries_list in terrestrial.values():
         entries_list.sort(key=_terrestrial_sort_key)
 
-    return ScanfileBundle(cable=cable, terrestrial=terrestrial, provenance=provenance)
+    return ScanfileBundle(cable=cable, terrestrial=terrestrial, satellite=satellite, provenance=provenance)
 
 
 def _filter_entries(
@@ -177,7 +190,9 @@ def _filter_entries(
 def _scan_identity(entry: TransponderScanEntry) -> str:
     delivery = (entry.delivery_system or "").upper()
     scope = ""
-    if delivery.startswith("DVB-C") or delivery == "CABLE":
+    if delivery.startswith("DVB-S") or delivery == "SATELLITE":
+        scope = (entry.provider or entry.extras.get("satellite_name") or "").lower()
+    elif delivery.startswith("DVB-C") or delivery == "CABLE":
         scope = (entry.provider or "").lower()
     elif delivery.startswith("DVB-T") or delivery == "TERRESTRIAL":
         scope = (entry.region or "").lower()
@@ -246,6 +261,15 @@ def _parse_last_seen(value: Optional[str]) -> Optional[datetime]:
         except ValueError:
             continue
     return None
+
+
+def _satellite_sort_key(entry: TransponderScanEntry) -> Tuple[int, str, int, str]:
+    return (
+        entry.frequency_hz or 0,
+        entry.polarization or "",
+        entry.symbol_rate or 0,
+        entry.modulation or "",
+    )
 
 
 def _cable_sort_key(entry: TransponderScanEntry) -> Tuple[int, int, str]:

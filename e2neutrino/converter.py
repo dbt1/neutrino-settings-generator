@@ -356,7 +356,8 @@ def convert(input_path: Path, output_path: Path, options: ConversionOptions) -> 
             scan_report = None
         else:
             log.info(
-                "wrote scanfiles -> cable:%d / terrestrial:%d",
+                "wrote scanfiles -> satellite:%d / cable:%d / terrestrial:%d",
+                sum(scan_result.bundle.counts().get("satellite", {}).values()),
                 sum(scan_result.bundle.counts().get("cable", {}).values()),
                 sum(scan_result.bundle.counts().get("terrestrial", {}).values()),
             )
